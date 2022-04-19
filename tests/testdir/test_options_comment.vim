@@ -15,7 +15,7 @@ bwipe!
 call delete('file.src')
 
 
-" test 'comments'
+" test 'comments', also depends on 'formatoptions'+=j
 call writefile(['def file()', '; one comment', '; another comment'], 'file.src')
 split file.src
 normal jJ
