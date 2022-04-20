@@ -1,0 +1,211 @@
+&ACCESS RVO1
+&REL 803
+&COMMENT Rack 1 Place
+&PARAM DISKPATH = KRC:\R1\Program\Unterprogramme
+DEF  fahrwege_small.src( )
+  ;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+  INTERRUPT ON 3 
+  BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+  ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+  ;ENDFOLD (INI)
+
+END
+
+GLOBAL DEF UP_Place_R1_L1_S1( )
+  ;FOLD Preconditions - Vorraussetzungen
+  ; Enable collision detection
+  ;FOLD COLLDETECT SetLimits Axis1: 150 % Axis2: 200 % Axis3: 150 % Axis4: 200 % Axis5: 150 % Axis6: 150 % ;%{PE}
+  ;FOLD Parameters ;%{h}
+    ;Params IlfProvider=kukaroboter.basistech.inlineforms.colldetect.setlimits; CollDetect.Command=SetLimits; CollDetect.Axis1=150; CollDetect.Axis2=200; CollDetect.Axis3=150; CollDetect.Axis4=200; CollDetect.Axis5=150; CollDetect.Axis6=150
+  ;ENDFOLD
+  SET_TQ_VALUES(150, 200, 150, 200, 150, 150)
+  ;ENDFOLD
+  ; Check for part in gripper (tool 2).
+  CheckPartPresent(OCCUPIED_GRIPPER,PART_ON_TOOL_2)
+  ; Enable part lost detection for tool 2
+  SetPartLostDetection(PART_ON_TOOL_2)
+  ; Set load data.
+  SetLoadData( )
+  ; Robot has to start from home position.
+  IF NOT $IN_HOME1 THEN
+    UP_HomeToHome(1)
+  ENDIF
+  ;ENDFOLD
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10002,10002,FHOME1,$nullframe,XHOME1) PRIO=-1
+  ;FOLD PTP HOME1 Vel=12 % PHome1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME1, 3:, 5:12, 7:PHome1
+  $BWDSTART=FALSE
+  PDAT_ACT= PPHome1
+  FDAT_ACT= FHOME1
+  BAS(#PTP_PARAMS,12)
+  PTP XHOME1
+  ;ENDFOLD
+
+  ;FOLD Area clearence handshake.
+  IF NOT $FLAG[M_Inbetriebnahme] THEN
+    ; Request area clearence.
+    AnfStoer_Store1_1_A99=SET_REQUEST
+    ; Wait for area clearence from PLC.
+    WAIT_FOR_INPUT("Frg_Storage1_1_E67",TRUE)
+    ; Reset area clearence request.
+    AnfStoer_Store1_1_A99=RESET_REQUEST
+    ; start cyclic clearence check
+    $CYCFLAG[ciFreigabeSPS]=Frg_Storage1_1_E67
+  ENDIF
+  ; set "robot in area"
+  RobAusStorage1_1_A67=SET_IN_AREA
+  ;ENDFOLD
+
+  ;FOLD Check for Teachmode
+  IF $FLAG[M_Teachen] THEN
+    WAIT FOR $T1
+  ENDIF
+  ;ENDFOLD
+
+  ; move to the rack
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10003,10002,FPlace_R1_L1_S1_VP1,XPlace_R1_L1_S1_VP1) PRIO=-1
+  ;FOLD SPTP Place_R1_L1_S1_VP1 CONT Vel=12 % PPlace_R1_L1_S1_VP1 Tool[2]:Lower Gripper Base[0];%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:SPTP, 2:Place_R1_L1_S1_VP1, 3:C_DIS, 5:12, 7:PPlace_R1_L1_S1_VP1
+  $BWDSTART=FALSE
+  PDAT_ACT= PPPlace_R1_L1_S1_VP1
+  FDAT_ACT= FPlace_R1_L1_S1_VP1
+  BAS(#PTP_PARAMS,12)
+  SPTP XPlace_R1_L1_S1_VP1 C_DIS
+  ;ENDFOLD
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10004,10003,FPlace_R1_L1_S1_VP2,XPlace_R1_L1_S1_VP2) PRIO=-1
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10009,10008,FPlace_R1_L1_S1_Check,XPlace_R1_L1_S1_Check) PRIO=-1
+  ;FOLD PTP Place_R1_L1_S1_Check Vel=12 % PPlace_R1_L1_S1_Check Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:Place_R1_L1_S1_Check, 3:, 5:12, 7:PPlace_R1_L1_S1_Check
+  $BWDSTART=FALSE
+  PDAT_ACT= PPPlace_R1_L1_S1_Check
+  FDAT_ACT= FPlace_R1_L1_S1_Check
+  BAS(#PTP_PARAMS,12)
+  PTP XPlace_R1_L1_S1_Check
+  ;ENDFOLD
+
+  ; fold Pruefe Platz frei
+  IF (DetectPart(CHECK_SHELF,PLACE)==OCCUPIED) THEN
+    UP_Rueckzug_R1Place( )
+    RETURN
+  ENDIF
+  ; endfold
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10010,10009,FPlace_R1_L1_S1_VP7,XPlace_R1_L1_S1_VP7) PRIO=-1
+  ;Fold SLIN Place_R1_L1_S1_VP7 CONT Vel=0.5 m/s LPlace_R1_L1_S1_VP7 Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:SLIN, 2:Place_R1_L1_S1_VP7, 3:C_DIS C_DIS, 5:0.5, 7:LPlace_R1_L1_S1_VP7
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_VP7
+  FDAT_ACT= FPlace_R1_L1_S1_VP7
+  BAS(#CP_PARAMS,0.5)
+  SLIN XPlace_R1_L1_S1_VP7 C_DIS C_DIS
+  ;EndFold
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10011,10010,FPlace_R1_L1_S1_VP8,XPlace_R1_L1_S1_VP8) PRIO=-1
+  ;FOLD LIN Place_R1_L1_S1_VP8 CONT Vel=0.5 m/s LPlace_R1_L1_S1_VP8 Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:Place_R1_L1_S1_VP8, 3:C_DIS C_DIS, 5:0.5, 7:LPlace_R1_L1_S1_VP8
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_VP8
+  FDAT_ACT= FPlace_R1_L1_S1_VP8
+  BAS(#CP_PARAMS,0.5)
+  LIN XPlace_R1_L1_S1_VP8 C_DIS C_DIS
+  ;ENDFOLD
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10012,10011,FPlace_R1_L1_S1_VP9,XPlace_R1_L1_S1_VP9) PRIO=-1
+  ; fold SLIN_REL Place_R1_L1_S1_VP9 CONT Vel=0.5 m/s LPlace_R1_L1_S1_VP9 Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:SLIN_REL, 2:Place_R1_L1_S1_VP9, 3:C_DIS C_DIS, 5:0.5, 7:LPlace_R1_L1_S1_VP9
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_VP9
+  FDAT_ACT= FPlace_R1_L1_S1_VP9
+  BAS(#CP_PARAMS,0.5)
+  SLIN_REL XPlace_R1_L1_S1_VP9 C_DIS C_DIS
+  ; endfold
+
+  ;Fold Test the way back home - part 1
+  CONTINUE
+  IF ($FLAG[M_Test_GrdstFahren1] AND NOT $FLAG[M_Test_GrdstFahren2]) THEN
+    $FLAG[M_Test_GrdstFahren2]=TRUE
+    UP_Rueckzug( )
+    RETURN
+  ENDIF
+  ;EndFold
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10013,10014,FPlace_R1_L1_S1_AP,XPlace_R1_L1_S1_AP) PRIO=-1
+  ;FOLD LIN Place_R1_L1_S1_AP Vel=0.2 m/s LPlace_R1_L1_S1_AP Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:Place_R1_L1_S1_AP, 3:, 5:0.2, 7:LPlace_R1_L1_S1_AP
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_AP
+  FDAT_ACT= FPlace_R1_L1_S1_AP
+  BAS(#CP_PARAMS,0.2)
+  LIN XPlace_R1_L1_S1_AP
+  ;ENDFOLD
+
+  ;FOLD Test the way back home - part 2
+  CONTINUE
+  IF $FLAG[M_Test_GrdstFahren2] THEN
+    $FLAG[M_Test_GrdstFahren2]=FALSE
+    UP_Rueckzug( )
+    RETURN
+  ENDIF
+  ;ENDFOLD
+
+  ; Disable part lost detection
+  SetPartLostDetection(NO_PART)
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10014,10015,FPlace_R1_L1_S1_NP1,XPlace_R1_L1_S1_NP1) PRIO=-1
+  ;FOLD LIN Place_R1_L1_S1_NP1 Vel=0.2 m/s LPlace_R1_L1_S1_NP1 Tool[2]:Lower Gripper Base[1]:Rack 1 ;%{PE}
+  ;FOLD Parameters ;%{h}
+    ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.old; Kuka.IsGlobalPoint=False; Kuka.PointName=Place_R1_L1_S1_NP1; Kuka.BlendingEnabled=False; Kuka.MoveDataName=LPlace_R1_L1_S1_NP1; Kuka.VelocityPath=0.2; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=LIN
+  ;ENDFOLD
+  $BWDSTART = FALSE
+  LDAT_ACT = LLPlace_R1_L1_S1_NP1
+  FDAT_ACT = FPlace_R1_L1_S1_NP1
+  BAS(#CP_PARAMS, 0.2)
+  SET_CD_PARAMS (0)
+  LIN XPlace_R1_L1_S1_NP1
+  ;ENDFOLD
+
+  ; Check for part present (empty gripper)
+  CheckPartPresent(EMPTY_GRIPPER)
+  ; set load data
+  SetLoadData( )
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10015,10016,FPlace_R1_L1_S1_NP2,XPlace_R1_L1_S1_NP2) PRIO=-1
+  ;FOLD LIN Place_R1_L1_S1_NP2 CONT Vel=0.5 m/s LPlace_R1_L1_S1_NP2 Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:Place_R1_L1_S1_NP2, 3:C_DIS C_DIS, 5:0.5, 7:LPlace_R1_L1_S1_NP2
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_NP2
+  FDAT_ACT= FPlace_R1_L1_S1_NP2
+  BAS(#CP_PARAMS,0.5)
+  LIN XPlace_R1_L1_S1_NP2 C_DIS C_DIS
+  ;ENDFOLD
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10016,10017,FPlace_R1_L1_S1_NP3,XPlace_R1_L1_S1_NP3) PRIO=-1
+  ;FOLD LIN Place_R1_L1_S1_NP3 Vel=0.5 m/s LPlace_R1_L1_S1_NP3 Tool[2]:Lower Gripper Base[1]:Rack1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:Place_R1_L1_S1_NP3, 3:, 5:0.5, 7:LPlace_R1_L1_S1_NP3
+  $BWDSTART=FALSE
+  LDAT_ACT= LLPlace_R1_L1_S1_NP3
+  FDAT_ACT= FPlace_R1_L1_S1_NP3
+  BAS(#CP_PARAMS,0.5)
+  LIN XPlace_R1_L1_S1_NP3
+  ;ENDFOLD
+
+  TRIGGER WHEN DISTANCE=1 DELAY=-1 DO Schrittmerker_R1Place(10023,10002,FHOME1,$nullframe,XHOME1) PRIO=-1
+  ;FOLD PTP HOME1 Vel=100 % PHome1;%{PE}%R8.3.21,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME1, 3:, 5:100, 7:PHome1
+  $BWDSTART=FALSE
+  PDAT_ACT= PPHome1
+  FDAT_ACT= FHOME1
+  BAS(#PTP_PARAMS,100)
+  PTP XHOME1
+  ;ENDFOLD
+
+  ;FOLD Final tasks.
+  ; Robot out of area Rack 1 Level 1
+  RobAusStorage1_1_A67=RESET_IN_AREA
+  ; stop cyclic clearence check
+  $CYCFLAG[ciFreigabeSPS]=DISABLE_MONITORING
+  ; Disable collision detection
+  ;FOLD COLLDETECT Off ;%{PE}
+  ;FOLD Parameters ;%{h}
+    ;Params IlfProvider=kukaroboter.basistech.inlineforms.colldetect.off; CollDetect.Command=Off
+  ;ENDFOLD
+  USE_CD_PARAMS(0)
+  ;ENDFOLD
+  ;ENDFOLD
+
+END
