@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 19. Apr 2022
+" Last Change: 20. Apr 2022
 "
 " ToDo's {{{
 " }}} ToDo's
@@ -33,7 +33,6 @@ let b:undo_ftplugin = "setlocal commentstring< comments< suffixes< suffixesadd<"
 
 " make header items, enums and sysvars a word including the characters #,$ and & 
 if get(g:,'krlKeyWord',1)
-  " setlocal iskeyword+=#,$,&
   setlocal iskeyword+=&,$,#
   let b:undo_ftplugin .= " iskeyword<"
 endif
@@ -71,14 +70,15 @@ endif
 
 " folding
 if has("folding")
+  let s:krlFoldLevel = get(g:, 'krlFoldLevel', 2)
   setlocal foldmethod=expr
   setlocal foldtext=krl#FoldText()
   setlocal foldenable
   setlocal fillchars-=fold:-
-  execute "setlocal foldexpr=krl#FoldExpr(v:lnum," . get(g:,"krlFoldLevel",2) . ")"
+  execute 'setlocal foldexpr=krl#FoldExpr(v:lnum,' . s:krlFoldLevel . ')'
   let b:undo_ftplugin .= " foldmethod< foldtext< foldenable< fillchars< foldexpr<"
   if krl#IsVkrcFolgeOrUP()
-    execute "setlocal foldlevel=" . (2-get(g:,"krlFoldLevel",2))
+    execute "setlocal foldlevel=" . (2-s:krlFoldLevel)
     let b:undo_ftplugin .= " foldlevel<"
   endif
 endif
