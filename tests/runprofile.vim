@@ -42,12 +42,19 @@ profile start testdir/resource_Profiling/profile_syntax_today.txt
 profile! file *krl.vim
 split testdir/resource_Profiling/fahrwege_big.src
 normal gg
+syntime on
 for i in range(1, line("$"))
   normal j
   if i%10 == 0
     redraw
   endif
 endfor
+redir! > testdir/resource_Profiling/syntime_syntax_today.txt
+set nomore
+syntime report
+redir END
+set more<
+set lines<
 bwipe!
 profile stop
 unlet g:krlFoldLevel
