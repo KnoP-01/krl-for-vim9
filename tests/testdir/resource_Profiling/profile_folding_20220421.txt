@@ -1,7 +1,7 @@
 SCRIPT  d:\daten\scripts\git\knop-01\krl-for-vim9\ftplugin\krl.vim
 Sourced 1 time
-Total time:   0.002193
- Self time:   0.002193
+Total time:   0.001818
+ Self time:   0.001818
 
 count  total (s)   self (s)
                             " Vim file type plugin
@@ -19,7 +19,7 @@ count  total (s)   self (s)
     1              0.000001 endif
     1              0.000003 let b:did_ftplugin = 1
                             
-    1              0.000004 let s:keepcpo = &cpo
+    1              0.000005 let s:keepcpo = &cpo
     1              0.000005 set cpo&vim
                             " }}} init
                             
@@ -38,8 +38,8 @@ count  total (s)   self (s)
     1              0.000002 let b:undo_ftplugin = "setlocal commentstring< comments< suffixes< suffixesadd<"
                             
                             " make header items, enums and sysvars a word including the characters #,$ and & 
-    1              0.000003 if get(g:,'krlKeyWord',1)
-    1              0.000029   setlocal iskeyword+=&,$,#
+    1              0.000007 if get(g:,'krlKeyWord',1)
+    1              0.000030   setlocal iskeyword+=&,$,#
     1              0.000003   let b:undo_ftplugin .= " iskeyword<"
     1              0.000001 endif
                             
@@ -60,7 +60,7 @@ count  total (s)   self (s)
     1              0.000002   setlocal formatoptions-=t
     1              0.000001   setlocal formatoptions+=l
     1              0.000002   setlocal formatoptions+=j
-    1              0.000005   if stridx(b:undo_ftplugin, " formatoptions<")==(-1)
+    1              0.000004   if stridx(b:undo_ftplugin, " formatoptions<")==(-1)
                                 " formatoptions may have already been added earlier
                                 let b:undo_ftplugin .= " formatoptions<"
     1              0.000001   endif
@@ -81,9 +81,9 @@ count  total (s)   self (s)
     1              0.000002   setlocal foldtext=krl#FoldText()
     1              0.000002   setlocal foldenable
     1              0.000003   setlocal fillchars-=fold:-
-    1              0.000007   execute 'setlocal foldexpr=krl#FoldExpr(v:lnum,' . s:krlFoldLevel . ')'
+    1              0.000006   execute 'setlocal foldexpr=krl#FoldExpr(v:lnum,' . s:krlFoldLevel . ')'
     1              0.000003   let b:undo_ftplugin .= " foldmethod< foldtext< foldenable< fillchars< foldexpr<"
-    1              0.001000   if krl#IsVkrcFolgeOrUP()
+    1              0.000705   if krl#IsVkrcFolgeOrUP()
                                 execute "setlocal foldlevel=" . (2-s:krlFoldLevel)
                                 let b:undo_ftplugin .= " foldlevel<"
     1              0.000001   endif
@@ -143,7 +143,7 @@ count  total (s)   self (s)
                                     \|| mapcheck("io","o")=="" && !hasmapto('<plug>KrlTxtObjInnerFold','o')
                                 omap <silent><buffer> io <plug>KrlTxtObjInnerFold
                               endif
-    1              0.000001 endif
+    1              0.000000 endif
                             
                             " }}} Match It and Fold Text Object mapping
                             
@@ -151,56 +151,56 @@ count  total (s)   self (s)
                             
     1              0.000003 if get(g:,'krlMoveAroundKeyMap',1)
                               " Move around functions
-    1              0.000034   nnoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'bs'  )<Bar>unlet b:knopCount<CR>:normal! zt<CR>
-    1              0.000026   onoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>.*\n\zs'  , 'bsW' )<Bar>unlet b:knopCount<CR>
-    1              0.000025   xnoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'bsW' )<Bar>unlet b:knopCount<CR>
-    1              0.000028   nnoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 's'   )<Bar>unlet b:knopCount<CR>:normal! zt<CR>
-    1              0.000025   onoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'sW'  )<Bar>unlet b:knopCount<CR>
-    1              0.000024   xnoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>.*\n'     , 'seWz')<Bar>unlet b:knopCount<CR>
-    1              0.000028   nnoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 'bs'  )<Bar>unlet b:knopCount<CR>:normal! zb<CR>
-    1              0.000026   onoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>\n^(.\|\n)'           , 'bseW')<Bar>unlet b:knopCount<CR>
-    1              0.000024   xnoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 'bsW' )<Bar>unlet b:knopCount<CR>
-    1              0.000028   nnoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 's'   )<Bar>unlet b:knopCount<CR>:normal! zb<CR>
-    1              0.000025   onoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v\ze^\s*end(fct\|dat)?>'                  , 'sW'  )<Bar>unlet b:knopCount<CR>
-    1              0.000023   xnoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>(\n)?'                , 'seWz')<Bar>unlet b:knopCount<CR>
+    1              0.000031   nnoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'bs'  )<Bar>unlet b:knopCount<CR>:normal! zt<CR>
+    1              0.000024   onoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>.*\n\zs'  , 'bsW' )<Bar>unlet b:knopCount<CR>
+    1              0.000023   xnoremap <silent><buffer> [[ :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'bsW' )<Bar>unlet b:knopCount<CR>
+    1              0.000025   nnoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 's'   )<Bar>unlet b:knopCount<CR>:normal! zt<CR>
+    1              0.000023   onoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>'         , 'sW'  )<Bar>unlet b:knopCount<CR>
+    1              0.000023   xnoremap <silent><buffer> ]] :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*(global\s+)?def(fct\|dat)?>.*\n'     , 'seWz')<Bar>unlet b:knopCount<CR>
+    1              0.000024   nnoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 'bs'  )<Bar>unlet b:knopCount<CR>:normal! zb<CR>
+    1              0.000023   onoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>\n^(.\|\n)'           , 'bseW')<Bar>unlet b:knopCount<CR>
+    1              0.000022   xnoremap <silent><buffer> [] :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 'bsW' )<Bar>unlet b:knopCount<CR>
+    1              0.000026   nnoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>'                     , 's'   )<Bar>unlet b:knopCount<CR>:normal! zb<CR>
+    1              0.000023   onoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\c\v\ze^\s*end(fct\|dat)?>'                  , 'sW'  )<Bar>unlet b:knopCount<CR>
+    1              0.000022   xnoremap <silent><buffer> ][ :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\c\v^\s*end(fct\|dat)?>(\n)?'                , 'seWz')<Bar>unlet b:knopCount<CR>
                               " Move around comments
-    1              0.000031   nnoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bs'  )<Bar>unlet b:knopCount<cr>
-    1              0.000027   onoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bsW' )<Bar>unlet b:knopCount<cr>
-    1              0.000025   xnoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bsW' )<Bar>unlet b:knopCount<cr>
-    1              0.000025   nnoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n\s*([^;\t ]\|$)'                  , 's'   )<Bar>unlet b:knopCount<cr>
-    1              0.000025   onoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n(\s*[^;\t ]\|$)'                  , 'seW' )<Bar>unlet b:knopCount<cr>
-    1              0.000024   xnoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n\ze\s*([^;\t ]\|$)'               , 'seW' )<Bar>unlet b:knopCount<cr>
+    1              0.000028   nnoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bs'  )<Bar>unlet b:knopCount<cr>
+    1              0.000023   onoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bsW' )<Bar>unlet b:knopCount<cr>
+    1              0.000022   xnoremap <silent><buffer> [; :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\v(^\s*;.*\n)@<!(^\s*;)'                     , 'bsW' )<Bar>unlet b:knopCount<cr>
+    1              0.000023   nnoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n\s*([^;\t ]\|$)'                  , 's'   )<Bar>unlet b:knopCount<cr>
+    1              0.000023   onoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1                     <Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n(\s*[^;\t ]\|$)'                  , 'seW' )<Bar>unlet b:knopCount<cr>
+    1              0.000022   xnoremap <silent><buffer> ]; :<C-U>let b:knopCount=v:count1<Bar>exe "normal! gv"<Bar>call knop#NTimesSearch(b:knopCount, '\v^\s*;.*\n\ze\s*([^;\t ]\|$)'               , 'seW' )<Bar>unlet b:knopCount<cr>
                               " inner and around function text objects
-    1              0.000020   if get(g:,'krlFunctionTextObject',0)
+    1              0.000021   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("aF","x")=="" && !hasmapto('<plug>KrlTxtObjAroundFuncInclCo','x')
     1              0.000007     xmap <silent><buffer> aF <plug>KrlTxtObjAroundFuncInclCo
     1              0.000001   endif
-    1              0.000013   if get(g:,'krlFunctionTextObject',0)
+    1              0.000012   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("af","x")=="" && !hasmapto('<plug>KrlTxtObjAroundFuncExclCo','x')
-    1              0.000006     xmap <silent><buffer> af <plug>KrlTxtObjAroundFuncExclCo
+    1              0.000005     xmap <silent><buffer> af <plug>KrlTxtObjAroundFuncExclCo
     1              0.000001   endif
-    1              0.000011   if get(g:,'krlFunctionTextObject',0)
+    1              0.000010   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("if","x")=="" && !hasmapto('<plug>KrlTxtObjInnerFunc','x')
     1              0.000005     xmap <silent><buffer> if <plug>KrlTxtObjInnerFunc
     1              0.000001   endif
-    1              0.000012   if get(g:,'krlFunctionTextObject',0)
+    1              0.000011   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("aF","o")=="" && !hasmapto('<plug>KrlTxtObjAroundFuncInclCo','o')
-    1              0.000006     omap <silent><buffer> aF <plug>KrlTxtObjAroundFuncInclCo
+    1              0.000005     omap <silent><buffer> aF <plug>KrlTxtObjAroundFuncInclCo
     1              0.000001   endif
-    1              0.000012   if get(g:,'krlFunctionTextObject',0)
+    1              0.000011   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("af","o")=="" && !hasmapto('<plug>KrlTxtObjAroundFuncExclCo','o')
-    1              0.000006     omap <silent><buffer> af <plug>KrlTxtObjAroundFuncExclCo
+    1              0.000005     omap <silent><buffer> af <plug>KrlTxtObjAroundFuncExclCo
     1              0.000001   endif
     1              0.000010   if get(g:,'krlFunctionTextObject',0)
                                     \|| mapcheck("if","o")=="" && !hasmapto('<plug>KrlTxtObjInnerFunc','o')
-    1              0.000005     omap <silent><buffer> if <plug>KrlTxtObjInnerFunc
+    1              0.000004     omap <silent><buffer> if <plug>KrlTxtObjInnerFunc
     1              0.000001   endif
                               " inner and around comment text objects
-    1              0.000012   if get(g:,'krlCommentTextObject',0)
+    1              0.000010   if get(g:,'krlCommentTextObject',0)
                                     \|| mapcheck("ac","x")=="" && !hasmapto('<plug>KrlTxtObjAroundComment','x')
     1              0.000005     xmap <silent><buffer> ac <plug>KrlTxtObjAroundComment
     1              0.000001   endif
-    1              0.000011   if get(g:,'krlCommentTextObject',0)
+    1              0.000010   if get(g:,'krlCommentTextObject',0)
                                     \|| mapcheck("ic","x")=="" && !hasmapto('<plug>KrlTxtObjInnerComment','x')
     1              0.000005     xmap <silent><buffer> ic <plug>KrlTxtObjInnerComment
     1              0.000001   endif
@@ -208,7 +208,7 @@ count  total (s)   self (s)
                                     \|| mapcheck("ac","o")=="" && !hasmapto('<plug>KrlTxtObjAroundComment','o')
     1              0.000005     omap <silent><buffer> ac <plug>KrlTxtObjAroundComment
     1              0.000001   endif
-    1              0.000011   if get(g:,'krlCommentTextObject',0)
+    1              0.000010   if get(g:,'krlCommentTextObject',0)
                                     \|| mapcheck("ic","o")=="" && !hasmapto('<plug>KrlTxtObjInnerComment','o')
     1              0.000005     omap <silent><buffer> ic <plug>KrlTxtObjInnerComment
     1              0.000001   endif
@@ -221,8 +221,8 @@ count  total (s)   self (s)
                             " if the mapping does not exist and there is no plug-mapping just map it,
                             " otherwise look for the config variable
                             
-    1              0.000004 if has("folding")
-    1              0.000029   if get(g:,'krlFoldingKeyMap',0) 
+    1              0.000003 if has("folding")
+    1              0.000025   if get(g:,'krlFoldingKeyMap',0) 
                                     \|| mapcheck("<F2>","n")=="" && mapcheck("<F3>","n")=="" && mapcheck("<F4>","n")==""
                                     \&& !hasmapto('<plug>KrlCloseAllFolds','n') && !hasmapto('<plug>KrlCloseLessFolds','n') && !hasmapto('<plug>KrlCloseNoFolds','n')
                                 " close all folds
@@ -230,57 +230,57 @@ count  total (s)   self (s)
                                 " close move folds
     1              0.000005     nmap <silent><buffer> <F3> <plug>KrlCloseLessFolds
                                 " open all folds
-    1              0.000005     nmap <silent><buffer> <F2> <plug>KrlCloseNoFolds
+    1              0.000004     nmap <silent><buffer> <F2> <plug>KrlCloseNoFolds
     1              0.000001   endif
-    1              0.000000 endif
+    1              0.000001 endif
                             
                             " }}} Configurable mappings
                             
                             " <PLUG> mappings {{{
                             
                             " Function Text Object
-    1              0.000003 if get(g:,'krlMoveAroundKeyMap',1) " depends on move around key mappings
-    1              0.000011   xnoremap <silent><buffer> <plug>KrlTxtObjAroundFuncInclCo :<C-U>call krl#FunctionTextObject(0,1)<CR>
-    1              0.000010   xnoremap <silent><buffer> <plug>KrlTxtObjAroundFuncExclCo :<C-U>call krl#FunctionTextObject(0,0)<CR>
-    1              0.000016   xnoremap <silent><buffer> <plug>KrlTxtObjInnerFunc        :<C-U>call krl#FunctionTextObject(1,0)<CR>
-    1              0.000011   onoremap <silent><buffer> <plug>KrlTxtObjAroundFuncInclCo :<C-U>call krl#FunctionTextObject(0,1)<CR>
-    1              0.000010   onoremap <silent><buffer> <plug>KrlTxtObjAroundFuncExclCo :<C-U>call krl#FunctionTextObject(0,0)<CR>
-    1              0.000009   onoremap <silent><buffer> <plug>KrlTxtObjInnerFunc        :<C-U>call krl#FunctionTextObject(1,0)<CR>
+    1              0.000002 if get(g:,'krlMoveAroundKeyMap',1) " depends on move around key mappings
+    1              0.000010   xnoremap <silent><buffer> <plug>KrlTxtObjAroundFuncInclCo :<C-U>call krl#FunctionTextObject(0,1)<CR>
+    1              0.000009   xnoremap <silent><buffer> <plug>KrlTxtObjAroundFuncExclCo :<C-U>call krl#FunctionTextObject(0,0)<CR>
+    1              0.000015   xnoremap <silent><buffer> <plug>KrlTxtObjInnerFunc        :<C-U>call krl#FunctionTextObject(1,0)<CR>
+    1              0.000010   onoremap <silent><buffer> <plug>KrlTxtObjAroundFuncInclCo :<C-U>call krl#FunctionTextObject(0,1)<CR>
+    1              0.000009   onoremap <silent><buffer> <plug>KrlTxtObjAroundFuncExclCo :<C-U>call krl#FunctionTextObject(0,0)<CR>
+    1              0.000008   onoremap <silent><buffer> <plug>KrlTxtObjInnerFunc        :<C-U>call krl#FunctionTextObject(1,0)<CR>
     1              0.000001 endif
                             
                             " comment text objects
     1              0.000003 if get(g:,'krlMoveAroundKeyMap',1) " depends on move around key mappings
-    1              0.000010   xnoremap <silent><buffer> <plug>KrlTxtObjAroundComment     :<C-U>call krl#CommentTextObject(1)<CR>
+    1              0.000009   xnoremap <silent><buffer> <plug>KrlTxtObjAroundComment     :<C-U>call krl#CommentTextObject(1)<CR>
     1              0.000009   xnoremap <silent><buffer> <plug>KrlTxtObjInnerComment      :<C-U>call krl#CommentTextObject(0)<CR>
-    1              0.000010   onoremap <silent><buffer> <plug>KrlTxtObjAroundComment     :<C-U>call krl#CommentTextObject(1)<CR>
-    1              0.000009   onoremap <silent><buffer> <plug>KrlTxtObjInnerComment      :<C-U>call krl#CommentTextObject(0)<CR>
-    1              0.000001 endif
+    1              0.000009   onoremap <silent><buffer> <plug>KrlTxtObjAroundComment     :<C-U>call krl#CommentTextObject(1)<CR>
+    1              0.000008   onoremap <silent><buffer> <plug>KrlTxtObjInnerComment      :<C-U>call krl#CommentTextObject(0)<CR>
+    1              0.000000 endif
                             
                             " folding
-    1              0.000004 if has("folding")
-    1              0.000014   if krl#IsVkrcFolgeOrUP()
+    1              0.000003 if has("folding")
+    1              0.000013   if krl#IsVkrcFolgeOrUP()
                                 nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldlevel=0<CR>
                                 nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldlevel=1<CR>
                                 nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldlevel=2<CR>
     1              0.000001   else
-    1              0.000011     nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldexpr=krl#FoldExpr(v:lnum,2)<CR>
-    1              0.000010     nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldexpr=krl#FoldExpr(v:lnum,1)<CR>
-    1              0.000010     nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldexpr=krl#FoldExpr(v:lnum,0)<CR>
+    1              0.000010     nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldexpr=krl#FoldExpr(v:lnum,2)<CR>
+    1              0.000009     nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldexpr=krl#FoldExpr(v:lnum,1)<CR>
+    1              0.000009     nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldexpr=krl#FoldExpr(v:lnum,0)<CR>
     1              0.000001   endif
-    1              0.000001 endif
+    1              0.000000 endif
                             
                             " fold text objects
-    1              0.000003 if exists("loaded_matchit") " depends on matchit (or matchup)
+    1              0.000002 if exists("loaded_matchit") " depends on matchit (or matchup)
                               xnoremap <silent><buffer> <plug>KrlTxtObjAroundFold     :<C-U>call krl#FoldTextObject(0)<CR>
                               xnoremap <silent><buffer> <plug>KrlTxtObjInnerFold      :<C-U>call krl#FoldTextObject(1)<CR>
                               onoremap <silent><buffer> <plug>KrlTxtObjAroundFold     :<C-U>call krl#FoldTextObject(0)<CR>
                               onoremap <silent><buffer> <plug>KrlTxtObjInnerFold      :<C-U>call krl#FoldTextObject(1)<CR>
-    1              0.000001 endif
+    1              0.000000 endif
                             
                             " }}} <plug> mappings
                             
                             " Finish {{{
-    1              0.000007 let &cpo = s:keepcpo
+    1              0.000006 let &cpo = s:keepcpo
     1              0.000002 unlet s:keepcpo
                             " }}} Finish
                             
@@ -288,8 +288,8 @@ count  total (s)   self (s)
 
 SCRIPT  d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim
 Sourced 1 time
-Total time:   0.000531
- Self time:   0.000531
+Total time:   0.000249
+ Self time:   0.000249
 
 count  total (s)   self (s)
                             " Vim autoload file
@@ -299,7 +299,7 @@ count  total (s)   self (s)
                             " Last Change: 20. Apr 2022
                             
                             " Init {{{
-    1              0.000011 if exists("g:loaded_krl")
+    1              0.000005 if exists("g:loaded_krl")
                               finish
     1              0.000001 endif
     1              0.000003 let g:loaded_krl = 1
@@ -325,24 +325,24 @@ count  total (s)   self (s)
                               return 0
                             endfunction
                             
-    1              0.000003 function krl#IsVkrcFolgeOrUP() abort
+    1              0.000002 function krl#IsVkrcFolgeOrUP() abort
                               return krl#IsVkrc() && bufname("%") =~? '\v%(folge|up)\d+\.src$'
                             endfunction
                             " }}} VKRC
                             
                             " Folding {{{
-    1              0.000003 function krl#FoldText() abort
+    1              0.000002 function krl#FoldText() abort
                               return substitute( substitute( getline(v:foldstart), '\v\c%(;\s*FOLD>\s+|;[^;]*$)', '', 'g'), '\(.*\)', '\1 -----', 'g')
                             endfunction
                             
-    1              0.000007 function s:FoldLevelFirstLine(line, patternFold) abort
+    1              0.000003 function s:FoldLevelFirstLine(line, patternFold) abort
                               if a:line =~? a:patternFold
                                 return 1
                               endif
                               return 0
                             endfunction
                             
-    1              0.000005 function s:FoldLevel(do, lnum, returnLiteral) abort
+    1              0.000002 function s:FoldLevel(do, lnum, returnLiteral) abort
                             
                               let foldLevelPrevLine = foldlevel(a:lnum - 1)
                               if  foldLevelPrevLine < 0 || a:returnLiteral
@@ -359,7 +359,7 @@ count  total (s)   self (s)
                               return foldLevelPrevLine + foldLevelChange
                             endfunction
                             
-    1              0.000006 function s:Return_S1_OnMoveEndFold(lnum, patternAnyFold, patternMoveFold, patternEndFold) abort
+    1              0.000003 function s:Return_S1_OnMoveEndFold(lnum, patternAnyFold, patternMoveFold, patternEndFold) abort
                             
                               let foundEndfold = 1
                             
@@ -390,7 +390,7 @@ count  total (s)   self (s)
                               return s:FoldLevel("=", a:lnum, dontReturnLiteral)
                             endfunction
                             
-    1              0.000003 function krl#FoldExpr(lnum, krlFoldLevel) abort
+    1              0.000002 function krl#FoldExpr(lnum, krlFoldLevel) abort
                             
                               if a:lnum < 1 || a:lnum > line("$") || a:krlFoldLevel == 0
                                 return 0
@@ -442,8 +442,8 @@ count  total (s)   self (s)
                             " }}} Folding
                             
                             " Function Text Object {{{
-    1              0.000007 if get(g:, 'krlMoveAroundKeyMap', 1) " depends on move around key mappings
-    1              0.000003   function krl#FunctionTextObject(inner,withcomment) abort
+    1              0.000004 if get(g:, 'krlMoveAroundKeyMap', 1) " depends on move around key mappings
+    1              0.000002   function krl#FunctionTextObject(inner,withcomment) abort
                                 if a:inner==1
                                   let l:n = 1
                                 else
@@ -472,7 +472,7 @@ count  total (s)   self (s)
                             " }}} Function Text Object
                             
                             " Comment Text Object {{{
-    1              0.000004 if get(g:, 'krlMoveAroundKeyMap', 1) " depends on move around key mappings
+    1              0.000003 if get(g:, 'krlMoveAroundKeyMap', 1) " depends on move around key mappings
     1              0.000002   function krl#CommentTextObject(around) abort
                                 if getline('.')!~'^\s*;' && !search('^\s*;',"sW")
                                   return
@@ -544,16 +544,16 @@ count  total (s)   self (s)
                             " }}} Fold Text Object
                             
                             " Finish {{{
-    1              0.000008 let &cpo = s:keepcpo
-    1              0.000003 unlet s:keepcpo
+    1              0.000006 let &cpo = s:keepcpo
+    1              0.000002 unlet s:keepcpo
                             " }}} Finish
                             
                             " vim:sw=2 sts=2 et fdm=marker
 
 SCRIPT  d:\daten\scripts\git\knop-01\krl-for-vim9\indent\krl.vim
 Sourced 1 time
-Total time:   0.000205
- Self time:   0.000205
+Total time:   0.000191
+ Self time:   0.000191
 
 count  total (s)   self (s)
                             " Vim indent file
@@ -569,7 +569,7 @@ count  total (s)   self (s)
     1              0.000001 endif
     1              0.000003 let b:did_indent = 1
                             
-    1              0.000009 setlocal nolisp
+    1              0.000010 setlocal nolisp
     1              0.000001 setlocal nocindent
     1              0.000001 setlocal nosmartindent
     1              0.000001 setlocal autoindent
@@ -588,7 +588,7 @@ count  total (s)   self (s)
     1              0.000001 endif
                             
                             " Only define the function once.
-    1              0.000013 if exists("*GetKrlIndent")
+    1              0.000003 if exists("*GetKrlIndent")
                               finish
     1              0.000001 endif
     1              0.000004 let s:keepcpo = &cpo
@@ -689,8 +689,8 @@ count  total (s)   self (s)
 
 SCRIPT  c:\Program Files (x86)\Vim\vim82\indent\krl.vim
 Sourced 1 time
-Total time:   0.000074
- Self time:   0.000074
+Total time:   0.000029
+ Self time:   0.000029
 
 count  total (s)   self (s)
                             " Vim indent file
@@ -701,8 +701,8 @@ count  total (s)   self (s)
                             " Credits: Based on indent/vim.vim
                             
                             " Only load this indent file when no other was loaded.
-    1              0.000023 if exists("b:did_indent")
-    1              0.000002   finish
+    1              0.000006 if exists("b:did_indent")
+    1              0.000001   finish
                             endif
                             let b:did_indent = 1
                             
@@ -826,61 +826,61 @@ count  total (s)   self (s)
 
 FUNCTION  krl#IsVkrc()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:18
-Called 19098 times
-Total time:   0.060441
- Self time:   0.060441
+Called 28743 times
+Total time:   0.088066
+ Self time:   0.088066
 
 count  total (s)   self (s)
-19098              0.034959   if exists("b:krlIsVkrc")
-19097              0.018314     return b:krlIsVkrc
+28743              0.051164   if exists("b:krlIsVkrc")
+28742              0.027009     return b:krlIsVkrc
     1              0.000001   endif
-    1              0.000019   if bufname("%") =~? '\v(folge|up|makro(saw|sps|step|trigger)?)\d*\.src'
+    1              0.000023   if bufname("%") =~? '\v(folge|up|makro(saw|sps|step|trigger)?)\d*\.src'
                                 for l:s in range(1, 8)
                                   if getline(l:s) =~? '\v^\s*\&param\s+tpvw_version>'
                                     let b:krlIsVkrc = 1
                                     return 1
                                   endif
                                 endfor
-    1              0.000000   endif
+    1              0.000001   endif
     1              0.000002   let b:krlIsVkrc = 0
     1              0.000001   return 0
 
 FUNCTION  krl#FoldExpr()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:99
-Called 19096 times
-Total time:   1.261689
- Self time:   1.036317
+Called 28741 times
+Total time:   1.836189
+ Self time:   1.506027
 
 count  total (s)   self (s)
                             
-19096              0.049810   if a:lnum < 1 || a:lnum > line("$") || a:krlFoldLevel == 0
+28741              0.073155   if a:lnum < 1 || a:lnum > line("$") || a:krlFoldLevel == 0
                                 return 0
-19096              0.009027   endif
+28741              0.013601   endif
                             
-19096              0.026342   let patternAnyFold  = '\v^\s*;\s*FOLD>'
-19096              0.030471   let patternMoveFold = '\v^\s*;\s*FOLD>.*<%(S?%(LIN|PTP|CIRC)%(_REL)?|Parameters)>'
-19096              0.024152   let patternEndFold  = '\v^\s*;\s*ENDFOLD>'
-19096              0.036709   let line = getline(a:lnum)
-19096              0.017167   if a:lnum > 1
+28741              0.039371   let patternAnyFold  = '\v^\s*;\s*FOLD>'
+28741              0.044846   let patternMoveFold = '\v^\s*;\s*FOLD>.*<%(S?%(LIN|PTP|CIRC)%(_REL)?|Parameters)>'
+28741              0.035583   let patternEndFold  = '\v^\s*;\s*ENDFOLD>'
+28741              0.053537   let line = getline(a:lnum)
+28741              0.025209   if a:lnum > 1
                                 " we are not in line 1, look for previous line as well
-19094              0.038410     let prevLine = getline(a:lnum - 1)
-19096              0.009904   endif
-19096              0.130602   let returnLiteral = (prevLine =~? patternAnyFold || prevLine =~? patternEndFold)
+28721              0.055917     let prevLine = getline(a:lnum - 1)
+28741              0.014481   endif
+28741              0.185384   let returnLiteral = (prevLine =~? patternAnyFold || prevLine =~? patternEndFold)
                             
-19096   0.105623   0.045237   if krl#IsVkrc() || a:krlFoldLevel == 2
+28741   0.156154   0.068141   if krl#IsVkrc() || a:krlFoldLevel == 2
                             
-19096              0.017205     if a:lnum == 1
-    2   0.000025   0.000009       return s:FoldLevelFirstLine(line, patternAnyFold)
-19094              0.009641     endif
+28741              0.025055     if a:lnum == 1
+   20   0.000188   0.000072       return s:FoldLevelFirstLine(line, patternAnyFold)
+28721              0.014021     endif
                             
-19094              0.064544     if line =~? patternAnyFold
- 1922   0.017556   0.006041       return s:FoldLevel("a1", a:lnum, returnLiteral)
-17172              0.007886     endif
+28721              0.088226     if line =~? patternAnyFold
+ 2889   0.026125   0.009240       return s:FoldLevel("a1", a:lnum, returnLiteral)
+25832              0.011688     endif
                             
-17172              0.063716     if line =~? patternEndFold 
+25832              0.083680     if line =~? patternEndFold 
                                   " Always return literal "s1" for any kind of endfold
- 1922              0.001702       return "s1"
-15250              0.006805     endif
+ 2891              0.002387       return "s1"
+22941              0.009960     endif
                             
                               elseif a:krlFoldLevel == 1
                             
@@ -896,35 +896,35 @@ count  total (s)   self (s)
                                   return s:Return_S1_OnMoveEndFold(a:lnum, patternAnyFold, patternMoveFold, patternEndFold)
                                 endif
                             
-15250              0.006760   endif
+22941              0.009897   endif
                             
-15250   0.199608   0.046153   return s:FoldLevel("=", a:lnum, returnLiteral)
+22941   0.295341   0.070192   return s:FoldLevel("=", a:lnum, returnLiteral)
 
 FUNCTION  krl#IsVkrcFolgeOrUP()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:34
 Called 2 times
-Total time:   0.000067
- Self time:   0.000012
+Total time:   0.000070
+ Self time:   0.000017
 
 count  total (s)   self (s)
-    2   0.000066   0.000011   return krl#IsVkrc() && bufname("%") =~? '\v%(folge|up)\d+\.src$'
+    2   0.000069   0.000016   return krl#IsVkrc() && bufname("%") =~? '\v%(folge|up)\d+\.src$'
 
 FUNCTION  <SNR>19_KrlPreNoneBlank()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\indent\krl.vim:115
-Called 0 times
-Total time:   0.000000
- Self time:   0.000000
+Called 2 times
+Total time:   0.000043
+ Self time:   0.000043
 
 count  total (s)   self (s)
                             
-                              let nPreNoneBlank = prevnonblank(a:lnum)
+    2              0.000008   let nPreNoneBlank = prevnonblank(a:lnum)
                             
-                              while nPreNoneBlank > 0 && getline(nPreNoneBlank) =~? '\v^\s*(\&\w\+|;|continue>)'
+    2              0.000022   while nPreNoneBlank > 0 && getline(nPreNoneBlank) =~? '\v^\s*(\&\w\+|;|continue>)'
                                 " Previouse none blank line irrelevant. Look further aback.
                                 let nPreNoneBlank = prevnonblank(nPreNoneBlank - 1)
-                              endwhile
+    2              0.000002   endwhile
                             
-                              return nPreNoneBlank
+    2              0.000002   return nPreNoneBlank
 
 FUNCTION  <SNR>18_Return_S1_OnMoveEndFold()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:68
@@ -995,114 +995,114 @@ count  total (s)   self (s)
 
 FUNCTION  <SNR>18_FoldLevelFirstLine()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:44
-Called 2 times
-Total time:   0.000016
- Self time:   0.000016
+Called 20 times
+Total time:   0.000116
+ Self time:   0.000116
 
 count  total (s)   self (s)
-    2              0.000010   if a:line =~? a:patternFold
-                                return 1
-    2              0.000001   endif
-    2              0.000001   return 0
+   20              0.000083   if a:line =~? a:patternFold
+   12              0.000009     return 1
+    8              0.000004   endif
+    8              0.000005   return 0
 
 FUNCTION  GetKrlIndent()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\indent\krl.vim:39
-Called 0 times
-Total time:   0.000000
- Self time:   0.000000
+Called 3 times
+Total time:   0.000225
+ Self time:   0.000183
 
 count  total (s)   self (s)
                             
-                              let currentLine = getline(v:lnum)
-                              if  currentLine =~? '\v^;(\s*(end)?fold>)@!' && !get(g:, 'krlCommentIndent', 0)
+    3              0.000007   let currentLine = getline(v:lnum)
+    3              0.000031   if  currentLine =~? '\v^;(\s*(end)?fold>)@!' && !get(g:, 'krlCommentIndent', 0)
                                 " If current line has a ; in column 1 and is no fold, keep zero indent.
                                 " This may be usefull if code is commented out at the first column.
-                                return 0
-                              endif
+    1              0.000001     return 0
+    2              0.000001   endif
                             
                               " Find a non-blank line above the current line.
-                              let preNoneBlankLineNum = s:KrlPreNoneBlank(v:lnum - 1)
-                              if  preNoneBlankLineNum == 0
+    2   0.000051   0.000008   let preNoneBlankLineNum = s:KrlPreNoneBlank(v:lnum - 1)
+    2              0.000002   if  preNoneBlankLineNum == 0
                                 " At the start of the file use zero indent.
-                                return 0
-                              endif
+    1              0.000001     return 0
+    1              0.000000   endif
                             
-                              let preNoneBlankLine = getline(preNoneBlankLineNum)
-                              let ind = indent(preNoneBlankLineNum)
+    1              0.000002   let preNoneBlankLine = getline(preNoneBlankLineNum)
+    1              0.000002   let ind = indent(preNoneBlankLineNum)
                             
                               " Define add 'shiftwidth' pattern
-                              let addShiftwidthPattern =           '\v^\s*('
-                              if get(g:, 'krlIndentBetweenDef', 1)
-                                let addShiftwidthPattern ..=               '(global\s+)?def(fct|dat)?\s+\$?\w'
-                                let addShiftwidthPattern ..=               '|'
-                              endif
-                              let addShiftwidthPattern   ..=               'if>|while>|for>|loop>'
-                              let addShiftwidthPattern   ..=               '|else>'
-                              let addShiftwidthPattern   ..=               '|case>|default>'
-                              let addShiftwidthPattern   ..=               '|repeat>'
-                              let addShiftwidthPattern   ..=               '|skip>|(ptp_)?spline>'
-                              let addShiftwidthPattern   ..=               '|time_block\s+(start|part)>'
-                              let addShiftwidthPattern   ..=               '|const_vel\s+start>'
-                              let addShiftwidthPattern   ..=             ')'
+    1              0.000002   let addShiftwidthPattern =           '\v^\s*('
+    1              0.000003   if get(g:, 'krlIndentBetweenDef', 1)
+    1              0.000003     let addShiftwidthPattern ..=               '(global\s+)?def(fct|dat)?\s+\$?\w'
+    1              0.000002     let addShiftwidthPattern ..=               '|'
+    1              0.000000   endif
+    1              0.000002   let addShiftwidthPattern   ..=               'if>|while>|for>|loop>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|else>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|case>|default>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|repeat>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|skip>|(ptp_)?spline>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|time_block\s+(start|part)>'
+    1              0.000002   let addShiftwidthPattern   ..=               '|const_vel\s+start>'
+    1              0.000002   let addShiftwidthPattern   ..=             ')'
                             
                               " Define Subtract 'shiftwidth' pattern
-                              let subtractShiftwidthPattern =      '\v^\s*('
-                              if get(g:, 'krlIndentBetweenDef', 1)
-                                let subtractShiftwidthPattern ..=          'end(fct|dat)?>'
-                                let subtractShiftwidthPattern ..=          '|'
-                              endif
-                              let subtractShiftwidthPattern   ..=          'end(if|while|for|loop)>'
-                              let subtractShiftwidthPattern   ..=          '|else>'
-                              let subtractShiftwidthPattern   ..=          '|case>|default>|endswitch>'
-                              let subtractShiftwidthPattern   ..=          '|until>'
-                              let subtractShiftwidthPattern   ..=          '|end(skip|spline)>'
-                              let subtractShiftwidthPattern   ..=          '|time_block\s+(part|end)>'
-                              let subtractShiftwidthPattern   ..=          '|const_vel\s+end>'
-                              let subtractShiftwidthPattern   ..=        ')'
+    1              0.000002   let subtractShiftwidthPattern =      '\v^\s*('
+    1              0.000002   if get(g:, 'krlIndentBetweenDef', 1)
+    1              0.000002     let subtractShiftwidthPattern ..=          'end(fct|dat)?>'
+    1              0.000002     let subtractShiftwidthPattern ..=          '|'
+    1              0.000000   endif
+    1              0.000002   let subtractShiftwidthPattern   ..=          'end(if|while|for|loop)>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|else>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|case>|default>|endswitch>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|until>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|end(skip|spline)>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|time_block\s+(part|end)>'
+    1              0.000002   let subtractShiftwidthPattern   ..=          '|const_vel\s+end>'
+    1              0.000003   let subtractShiftwidthPattern   ..=        ')'
                             
                               " Add shiftwidth
-                              if preNoneBlankLine =~? addShiftwidthPattern
+    1              0.000026   if preNoneBlankLine =~? addShiftwidthPattern
                                 let ind += &sw
-                              endif
+    1              0.000000   endif
                             
                               " Subtract shiftwidth
-                              if currentLine =~? subtractShiftwidthPattern
+    1              0.000015   if currentLine =~? subtractShiftwidthPattern
                                 let ind = ind - &sw
-                              endif
+    1              0.000000   endif
                             
                               " First case after a switch gets the indent of the switch.
-                              if currentLine =~? '\v^\s*case>'  && preNoneBlankLine =~? '\v^\s*switch>'
+    1              0.000005   if currentLine =~? '\v^\s*case>'  && preNoneBlankLine =~? '\v^\s*switch>'
                                 let ind = ind + &sw
-                              endif
+    1              0.000000   endif
                             
                               " align continue with the following instruction
-                              if currentLine =~? '\v^\s*continue>'  && getline(v:lnum + 1) =~? subtractShiftwidthPattern
+    1              0.000005   if currentLine =~? '\v^\s*continue>'  && getline(v:lnum + 1) =~? subtractShiftwidthPattern
                                 let ind = ind - &sw
-                              endif
+    1              0.000000   endif
                             
-                              return ind
+    1              0.000001   return ind
 
 FUNCTION  <SNR>18_FoldLevel()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:51
-Called 17172 times
-Total time:   0.164969
- Self time:   0.164969
+Called 25830 times
+Total time:   0.242033
+ Self time:   0.242033
 
 count  total (s)   self (s)
                             
-17172              0.040700   let foldLevelPrevLine = foldlevel(a:lnum - 1)
-17172              0.025250   if  foldLevelPrevLine < 0 || a:returnLiteral
- 8856              0.008278     return a:do
- 8316              0.003864   endif
+25830              0.059712   let foldLevelPrevLine = foldlevel(a:lnum - 1)
+25830              0.036706   if  foldLevelPrevLine < 0 || a:returnLiteral
+13326              0.012176     return a:do
+12504              0.005632   endif
                             
- 8316              0.009970   let foldLevelChange = 0
- 8316              0.009412   if     a:do == "a1"
-  128              0.000142     let foldLevelChange = 1
- 8188              0.008888   elseif a:do == "s1"
+12504              0.014517   let foldLevelChange = 0
+12504              0.013884   if     a:do == "a1"
+  194              0.000218     let foldLevelChange = 1
+12310              0.013085   elseif a:do == "s1"
                                 let foldLevelChange = (-1)
- 8316              0.003728   endif
+12504              0.005520   endif
                             
- 8316              0.010987   return foldLevelPrevLine + foldLevelChange
+12504              0.015992   return foldLevelPrevLine + foldLevelChange
 
 FUNCTION  krl#FoldText()
     Defined: d:\daten\scripts\git\knop-01\krl-for-vim9\autoload\krl.vim:40
@@ -1136,29 +1136,29 @@ count  total (s)   self (s)
 
 FUNCTIONS SORTED ON TOTAL TIME
 count  total (s)   self (s)  function
-19096   1.261689   1.036317  krl#FoldExpr()
-17172   0.164969             <SNR>18_FoldLevel()
-19098   0.060441             krl#IsVkrc()
-    2   0.000067   0.000012  krl#IsVkrcFolgeOrUP()
-    2   0.000016             <SNR>18_FoldLevelFirstLine()
-                             krl#FunctionTextObject()
-                             GetKrlIndent()
+28741   1.836189   1.506027  krl#FoldExpr()
+25830   0.242033             <SNR>18_FoldLevel()
+28743   0.088066             krl#IsVkrc()
+    3   0.000225   0.000183  GetKrlIndent()
+   20   0.000116             <SNR>18_FoldLevelFirstLine()
+    2   0.000070   0.000017  krl#IsVkrcFolgeOrUP()
+    2   0.000043             <SNR>19_KrlPreNoneBlank()
                              <SNR>18_Return_S1_OnMoveEndFold()
-                             <SNR>19_KrlPreNoneBlank()
+                             krl#FunctionTextObject()
                              krl#FoldText()
                              krl#CommentTextObject()
 
 FUNCTIONS SORTED ON SELF TIME
 count  total (s)   self (s)  function
-19096   1.261689   1.036317  krl#FoldExpr()
-17172              0.164969  <SNR>18_FoldLevel()
-19098              0.060441  krl#IsVkrc()
-    2              0.000016  <SNR>18_FoldLevelFirstLine()
-    2   0.000067   0.000012  krl#IsVkrcFolgeOrUP()
+28741   1.836189   1.506027  krl#FoldExpr()
+25830              0.242033  <SNR>18_FoldLevel()
+28743              0.088066  krl#IsVkrc()
+    3   0.000225   0.000183  GetKrlIndent()
+   20              0.000116  <SNR>18_FoldLevelFirstLine()
+    2              0.000043  <SNR>19_KrlPreNoneBlank()
+    2   0.000070   0.000017  krl#IsVkrcFolgeOrUP()
                              krl#FunctionTextObject()
-                             GetKrlIndent()
-                             <SNR>18_Return_S1_OnMoveEndFold()
-                             <SNR>19_KrlPreNoneBlank()
                              krl#FoldText()
                              krl#CommentTextObject()
+                             <SNR>18_Return_S1_OnMoveEndFold()
 

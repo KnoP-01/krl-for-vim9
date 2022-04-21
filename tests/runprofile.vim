@@ -29,7 +29,9 @@ syntax off
 profile start testdir/resource_Profiling/profile_folding_today.txt
 profile! file *krl.vim
 split testdir/resource_Profiling/fahrwege_big.src
-redraw
+normal O; fold
+normal jo; endfold
+normal zx
 bwipe!
 profile stop
 
@@ -66,7 +68,6 @@ syntax off
 profile start testdir/resource_Profiling/profile_indent_today.txt
 profile! file *krl.vim
 split testdir/resource_Profiling/fahrwege_big.src
-redraw
 normal gg=G
 redraw
 bwipe!
