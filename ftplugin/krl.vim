@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 20. Apr 2022
+" Last Change: 11. May 2022
 "
 " ToDo's {{{
 " }}} ToDo's
@@ -70,17 +70,13 @@ endif
 
 " folding
 if has("folding")
-  let s:krlFoldLevel = get(g:, 'krlFoldLevel', 2)
+  let s:krlFoldLevel = get(g:, 'krlFoldLevel', 1)
   setlocal foldmethod=expr
   setlocal foldtext=krl#FoldText()
   setlocal foldenable
   setlocal fillchars-=fold:-
   execute 'setlocal foldexpr=krl#FoldExpr(v:lnum,' . s:krlFoldLevel . ')'
   let b:undo_ftplugin .= " foldmethod< foldtext< foldenable< fillchars< foldexpr<"
-  if krl#IsVkrcFolgeOrUP()
-    execute "setlocal foldlevel=" . (2-s:krlFoldLevel)
-    let b:undo_ftplugin .= " foldlevel<"
-  endif
 endif
 
 " }}} Vim Settings
@@ -252,15 +248,9 @@ endif
 
 " folding
 if has("folding")
-  if krl#IsVkrcFolgeOrUP()
-    nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldlevel=0<CR>
-    nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldlevel=1<CR>
-    nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldlevel=2<CR>
-  else
-    nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldexpr=krl#FoldExpr(v:lnum,2)<CR>
-    nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldexpr=krl#FoldExpr(v:lnum,1)<CR>
-    nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldexpr=krl#FoldExpr(v:lnum,0)<CR>
-  endif
+  nnoremap <silent><buffer> <plug>KrlCloseAllFolds  :setlocal foldexpr=krl#FoldExpr(v:lnum,2) foldlevel=0<CR>
+  nnoremap <silent><buffer> <plug>KrlCloseLessFolds :setlocal foldexpr=krl#FoldExpr(v:lnum,1) foldlevel=0<CR>
+  nnoremap <silent><buffer> <plug>KrlCloseNoFolds   :setlocal foldexpr=krl#FoldExpr(v:lnum,0) foldlevel=0<CR>
 endif
 
 " fold text objects
