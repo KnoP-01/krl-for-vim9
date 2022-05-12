@@ -1,3 +1,5 @@
+# THIS HERE IS WORK IN PROGRESS!
+# THE CURRENT STABLE VERSION IS HERE: https://github.com/KnoP-01/krl-for-vim  
 ```
                                              _           _______
                                             /.\\        /  ___  \_________  _
