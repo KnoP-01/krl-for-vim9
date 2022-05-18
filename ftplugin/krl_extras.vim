@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 12. May 2022
+" Last Change: 18. May 2022
 "
 " ToDo's {{{
 " }}} ToDo's
@@ -1340,6 +1340,7 @@ if get(g:,'krlPath',1)
     let s:krlpath='./**'
   endif
 
+  call s:KnopVerboseEcho("'path' set to: " . s:krlpath)
   execute "setlocal path=".s:krlpath
   let b:undo_ftplugin = b:undo_ftplugin." pa<"
 
