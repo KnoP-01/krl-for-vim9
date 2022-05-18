@@ -8,11 +8,6 @@
 " }}} ToDo's
 
 " Init {{{
-if exists("b:did_ftplugin_extras")
-  finish
-endif
-let b:did_ftplugin_extras = 1
-
 let s:keepcpo = &cpo
 set cpo&vim
 " }}} init
