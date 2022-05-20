@@ -8,6 +8,7 @@ set nocp
 filetype indent on
 syn on
 set report=9999
+packadd! matchit
 let &runtimepath = '..,' . &runtimepath
 echo "&runtimepath=>" . &runtimepath . '<'
 
