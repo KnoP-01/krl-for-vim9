@@ -19,7 +19,7 @@ let failed_count += assert_equal('file.Src', expand('%'), 'Option suffixesadd sh
 bwipe!
 call delete('file.Src')
 call delete('file.Dat')
-set filetype<
+set filetype&
 
 
 filetype plugin indent off
