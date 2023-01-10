@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 28. Jun 2022
+" Last Change: 10. Jan 2023
 "
 
 " Init {{{
@@ -817,6 +817,7 @@ if !exists("*s:KrlSearchVkrcMarker()")
         if l:type != 'ENUMVALUE'
           for l:i in getqflist()
             if get(l:i,'text') !~ '\v\c^\s*(global\s+)?enum>'
+                  \|| get(l:i,'text') =~ '\v\c^\s*(global\s+)?enum\s+'.l:currentWord
               call add(l:qftmp1,l:i)
             endif
           endfor
