@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 12. May 2022
+" Last Change: 16. Jan 2023
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -212,7 +212,7 @@ syn keyword krlStructure msg_t
 "
 " Predefined structures and enums found in /r1/system/$config.dat
 " BasisTech
-syn keyword krlStructure dig_out_type ctrl_in_t ctrl_out_t fct_out_t fct_in_t odat basis_sugg_t out_sugg_t md_state machine_def_t machine_tool_t machine_frame_t trigger_para constvel_para condstop_para adat tm_sugg_t tqm_tqdat_t sps_prog_type
+syn keyword krlStructure dig_out_type ctrl_in_t ctrl_out_t fct_out_t fct_in_t odat hdat basis_sugg_t out_sugg_t md_state machine_def_t machine_tool_t machine_frame_t trigger_para constvel_para condstop_para adat tm_sugg_t tqm_tqdat_t sps_prog_type
 syn keyword krlEnum bas_command out_modetype ipo_m_t apo_mode_t funct_type p00_command timer_actiontype
 "
 " GripperTech
