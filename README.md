@@ -228,7 +228,7 @@ have any questions.
 [3]: https://github.com/KnoP-01/krl-for-vim9/blob/master/doc/krl.txt#L212
 [4]: https://www.vim.org/scripts/script.php?script_id=5344
 [5]: https://github.com/KnoP-01/krl-for-vim9/issues
-[6]: https://github.com/KnoP-01/krl-for-vim9/blob/master/doc/krl.txt#L230
+[6]: https://github.com/KnoP-01/krl-for-vim9/blob/master/doc/krl.txt#L274
 [7]: https://github.com/tpope/vim-commentary
 [8]: https://www.vim.org/scripts/script.php?script_id=39
 [9]: https://www.kuka.com/en-de/products/robot-systems/industrial-robots
