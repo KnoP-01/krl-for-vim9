@@ -385,7 +385,7 @@ endif
 " }}} BuildInFunction
 
 " Function {{{
-syn match krlFunction /[a-zA-Z_]\w* *(/me=e-1 contains=krlBuildInFunction
+syn match krlFunction /[$a-zA-Z_]\w* *(/me=e-1 contains=krlBuildInFunction
 highlight default link krlFunction Function
 " }}} Function
 
