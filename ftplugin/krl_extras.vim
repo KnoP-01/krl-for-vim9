@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 12. Feb 2024
+" Last Change: 27. Mar 2025
 "
 
 " Init {{{
@@ -217,6 +217,7 @@ if !exists("*s:KrlSearchVkrcMarker()")
           let l:type = l:type . "FCT"
         endif
         let l:currentWord = substitute(l:currentWord,'\v^%(sys)?%(proc|func)','','')
+        let l:currentWord = substitute(l:currentWord,'\$','\\$','g') " escape dollars in proc/func name (e.g. $xx_IDENT())
         call knop_extras#VerboseEcho([l:currentWord,"appear to be a ".l:type])
         return s:KrlSearchProc(l:currentWord)
         "
