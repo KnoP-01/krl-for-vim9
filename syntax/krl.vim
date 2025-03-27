@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 18. Jan 2023
+" Last Change: 27. Mar 2025
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -245,7 +245,8 @@ highlight default link krlEnum Structure
 " }}} Predefined Structure and Enum
 
 " System variable {{{
-syn match krlSysvars /\<\$\a[a-zA-Z0-9_.]*/
+" this should not match procs like $xx_IDENT() found in LoadDetermination tech package
+syn match krlSysvars /\<\$\a[a-zA-Z0-9_.]* *[^(]/me=e-1
 if g:krlGroupName
   highlight default link krlSysvars Sysvars
 else
@@ -273,7 +274,7 @@ syn keyword krlConditional if then else endif switch case default endswitch skip
 highlight default link krlConditional Conditional
 " Repeat
 syn keyword krlRepeat for to endfor while endwhile repeat until loop endloop exit
-" STEP is used as variable in VKRC, this pattern should match STEP -, 5 or VAR
+" STEP is used as variable in VKRC, this pattern should match STEP -, 5(constant number) or VAR
 syn match krlRepeat /\v\cstep\s+%(-|\w)/me=e-1
 highlight default link krlRepeat Repeat
 " Label
