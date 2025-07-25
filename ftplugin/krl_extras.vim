@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 27. Mar 2025
+" Last Change: 24. Jul 2025
 "
 
 " Init {{{
@@ -861,7 +861,7 @@ if !exists("*s:KrlSearchVkrcMarker()")
 
   " }}} List Def/Usage
 
-endif " !exists("*knop_extras#VerboseEcho()")
+endif " !exists("*s:KrlSearchVkrcMarker()")
 
 " Vim Settings {{{
 
