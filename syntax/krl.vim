@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 04. Apr 2025
+" Last Change: 24. Jul 2025
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -62,8 +62,8 @@ syn match krlMoveFoldComment /\c\v^\s*;\s*fold>[^;]*<s?%(ptp|lin|circ|spl)(_rel)
 highlight default link krlMoveFoldComment Comment
 
 " things to highlight in a fold line
-syn keyword krlFoldHighlights CONT IN SYN OUT containedin=krlFoldComment
-syn match krlFoldHighlights /\c\v<(M|F|E|A|t|i|bin|binin|UP|SPSMAKRO)\d+>/ containedin=krlFoldComment
+syn keyword krlFoldHighlights CONT IN SYN OUT contained containedin=krlFoldComment
+syn match krlFoldHighlights /\c\v<(M|F|E|A|t|i|bin|binin|UP|SPSMAKRO)\d+>/ contained containedin=krlFoldComment
 if g:krlGroupName
   highlight default link krlFoldHighlights Sysvars
 else
