@@ -58,7 +58,7 @@ syn match krlFoldComment /\c\v^\s*;\s*%(end)?fold>[^;]*/ containedin=krlFold con
 highlight default link krlFoldComment Comment
 
 " move fold comment until second ;
-syn match krlMoveFoldComment /\c\v^\s*;\s*fold>[^;]*<s?%(ptp|lin|circ|spl)(_rel)?>[^;]*/ containedin=krlFold contains=krlInteger,krlFloat,krlMovement,krlDelimiter
+syn match krlMoveFoldComment /\c\v^\s*;\s*fold>[^;]*<s?%(ptp|lin|circ?|spl)%(_rel)?>[^;]*/ containedin=krlFold contains=krlInteger,krlFloat,krlMovement,krlDelimiter
 highlight default link krlMoveFoldComment Comment
 
 " things to highlight in a fold line
@@ -294,6 +294,9 @@ highlight default link krlException Exception
 
 " special keywords for movement commands {{{
 syn keyword krlMovement PTP PTP_REL LIN LIN_REL CIRC CIRC_REL SPL SPL_REL SPTP SPTP_REL SLIN SLIN_REL SCIRC SCIRC_REL
+" VKRC movement
+syn keyword krlMovement CIR KLIN
+" Async movement
 syn keyword krlMovement ASYPTP ASYCONT ASYSTOP ASYCANCEL MOVE_EMI
 syn match krlMovement /\v\c^\s*<BRAKE(\s+F)?>/
 if g:krlGroupName
