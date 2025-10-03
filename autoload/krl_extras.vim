@@ -2,7 +2,7 @@
 " Language: Helper functions used for Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 27. Mar 2025
+" Last Change: 03. Oct 2025
 
 " Init {{{
 if exists("g:loaded_krl_extras")
@@ -47,6 +47,12 @@ function krl_extras#PathWithGlobalDataLists() abort
   catch /^Vim\%((\a\+)\)\=:E683/
     call knop_extras#VerboseEcho(":lvimgrep stopped with E683! No global data lists found in \'path\'.")
     return ' '
+  endtry
+  try
+    execute ':noautocmd lvimgrepadd /\c\v^\s*def\s+\$operate>/j ' . knop_extras#PreparePath(&path,'*.[sS][rR][cC]')
+  catch /^Vim\%((\a\+)\)\=:E479/
+  catch /^Vim\%((\a\+)\)\=:E480/
+  catch /^Vim\%((\a\+)\)\=:E683/
   endtry
   let l:locationList = getloclist(0)
   let l:path = ' '
