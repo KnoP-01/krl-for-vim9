@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 12. May 2023
+" Last Change: 27. Nov 2025
 "
 " ToDo's {{{
 " }}} ToDo's
@@ -43,6 +43,9 @@ if get(g:,'krlAutoComment',1)
   setlocal formatoptions+=o
   let b:undo_ftplugin .= " formatoptions<"
 endif
+
+setlocal fileencoding=latin9
+let b:undo_ftplugin .= " fileencoding<"
 
 " format comments
 if get(g:,'krlFormatComments',1)
