@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
-" Version: 3.0.0
-" Last Change: 12. Jan 2026
+" Version: 3.1.0
+" Last Change: 13. Jan 2026
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -308,7 +308,7 @@ highlight default link krlException Exception
 " special keywords for movement commands {{{
 syn keyword krlMovement PTP PTP_REL LIN LIN_REL CIRC CIRC_REL SPL SPL_REL SPTP SPTP_REL SLIN SLIN_REL SCIRC SCIRC_REL
 " VKRC movement
-syn keyword krlMovement CIR KLIN
+syn keyword krlMovement CIR KCIR KLIN
 " Async movement
 syn keyword krlMovement ASYPTP ASYCONT ASYSTOP ASYCANCEL MOVE_EMI
 syn match krlMovement /\v\c^\s*<BRAKE(\s+F)?>/
