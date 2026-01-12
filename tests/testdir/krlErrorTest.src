@@ -1,0 +1,549 @@
+def krlErrorTest()
+  ; search for 
+  ; /^\s*;\s*\zs\\\s*\%[ERROR]\(\s*\/\)\?
+
+
+  ; krlError0 
+  ; vars or funcs >24 chars are not possible in krl. a234567890123456789012345
+  decl int a_3456789012345678901234
+  decl int a234567890123456789012345
+  ;        \    ERROR              /
+
+  a_3456789012345678901234 = 0
+  a234567890123456789012345 = 0
+ ;\    ERROR              /
+
+  a_3456789012345678901234()
+  a234567890123456789012345()
+ ;\    ERROR              /
+
+
+  ; krlError1
+  ; should be interrupt (on|off) <prio>
+  interrupt on 5
+  interrupt 5 on
+ ;\    ERROR   /
+
+  interrupt off 5
+  interrupt 5 off
+ ;\    ERROR    /
+
+  interrupt on n_Int_Var
+  interrupt n_Int_Var on
+ ;\    ERROR           /
+
+  interrupt off n_Int_Var
+  interrupt n_Int_Var off
+ ;\    ERROR            /
+
+
+  ; krlError2
+
+
+  ; krlError3
+  ; for bla==5 to 7...
+  for i = 1 to 6
+  for i == 1 to 6
+  ;     \/
+  for i := 1 to 6
+  ;     \/
+  endfor
+  endfor
+  endfor
+
+
+  ; krlError4
+  ; wait for a=b
+  Return a==b
+  Return a=b
+  ;       \
+  Return a:=b
+  ;       \/
+
+  wait for a and b==c
+  wait for a and b=c
+  ;               \
+  wait for a and b:=c
+  ;               \/
+
+  if a<>5 and b==true or (c==d) then
+  if a<>5 and b==true or (c=d) then
+  ;                        \
+  if a<>5 and b==true or (c:=d) then
+  ;                        \/
+  endif
+  endif
+  endif
+
+  while a<>5 and b==true or (c==d)
+  while a<>5 and b==true or (c=d)
+  ;                           \
+  while a<>5 and b==true or (c:=d)
+  ;                           \/
+  endwhile
+  endwhile
+  endwhile
+
+  Repeat
+  Repeat
+  Repeat
+  until a<>5 and b==true or (c==d)
+  until a<>5 and b==true or (c=d)
+  ;                           \/
+  until a<>5 and b==true or (c:=d)
+  ;                           \/
+
+  global interrupt decl 3 when $stopmess==true do ir_stopm ( )
+  global interrupt decl 3 when $stopmess=true do ir_stopm ( )
+  ;                                     \
+  global interrupt decl 3 when $stopmess:=true do ir_stopm ( )
+  ;                                     \/
+
+
+  ; krlError5
+  ; wait for a><b
+  Return a<>b
+  Return a><b
+  ;       \/
+
+  wait for a and b<>c
+  wait for a and b><c
+  ;               \/
+
+  if a<>5 and b==true or (c<>d) then
+  if a<>5 and b==true or (c><d) then
+  ;                        \/
+  endif
+  endif
+
+  while a<>5 and b==true or (c<>d)
+  while a<>5 and b==true or (c><d)
+  ;                           \/
+  endwhile
+  endwhile
+
+  Repeat
+  Repeat
+  until a<>5 and b==true or (c<>d)
+  until a<>5 and b==true or (c><d)
+  ;                           \/
+
+  global interrupt decl 3 when $stopmess<>true do ir_stopm ( )
+  global interrupt decl 3 when $stopmess><true do ir_stopm ( )
+  ;                                     \/
+
+
+  ; krlError6
+  ; if (a==5) (b==6) ...
+  Return (a==5) or (b==6)
+  Return (a==5) (b==6)
+  ;           \E/
+
+  wait for a and 
+  wait for a and 
+
+  if a<>5 and b==true or (a==5) or (b==6) then
+  if a<>5 and b==true or (a==5) (b==6) then
+  ;                           \E/
+  endif
+  endif
+
+  while a<>5 and b==true or (a==5) or (b==6)
+  while a<>5 and b==true or (a==5) (b==6)
+  ;                              \E/
+  endwhile
+  endwhile
+
+  Repeat
+  Repeat
+  until a<>5 and b==true or (a==5) or (b==6)
+  until a<>5 and b==true or (a==5)    (b==6)
+  ;                              \ERRO/
+
+
+  ; krlError7
+  ; a == b + 1
+  ; a := b + 1
+  a = b + 5
+  a == b + 5
+  ; \/
+  a := b + 5
+  ; \/
+
+
+  ; krlError8
+  ; this one is tricky. Make sure this does not match trigger instructions; OK, next try, now search for false positives
+  ; a = b and c or (int1=int2)
+  ; make sure the next line is not a false positive
+  trigger when distance = 1 delay = 0 do a=5
+  a = b==c
+  a = b=c
+  ;    \
+  a = b=c
+  ;    \
+
+  a = b and c or (int1==int2)
+  a = b and c or (int1=int2)
+  ;                   \
+
+
+  ; krlError9
+  ; <(distance|delay|prio|minimum|maximum)> :=
+  ; <(distance|delay|prio|minimum|maximum)> ==
+  trigger when distance = 1 delay = 0 do bla() prio=-1
+  trigger when distance := 1 delay = 0 do bla() prio=-1
+  ;                     \/
+  trigger when distance == 1 delay = 0 do bla() prio=-1
+  ;                     \/
+  trigger when distance = 1 delay := 0 do bla() prio=-1
+  ;                               \/
+  trigger when distance = 1 delay == 0 do bla() prio=-1
+  ;                               \/
+  trigger when distance = 1 delay = 0 do bla() prio:=-1
+  ;                                                \/
+  trigger when distance = 1 delay = 0 do bla() prio==-1
+  ;                                                \/
+
+  anout on ana1=$vel_act*fac1+ofs1 delay= ana_delay1 minimum=-1 maximum=1
+  anout on ana1=$vel_act*fac1+ofs1 delay= ana_delay1 minimum:=-1 maximum=1
+  ;                                                         \/
+  anout on ana1=$vel_act*fac1+ofs1 delay= ana_delay1 minimum==-1 maximum=1
+  ;                                                         \/
+  anout on ana1=$vel_act*fac1+ofs1 delay= ana_delay1 minimum=-1 maximum:=1
+  ;                                                                    \/
+  anout on ana1=$vel_act*fac1+ofs1 delay= ana_delay1 minimum=-1 maximum==1
+  ;                                                                    \/
+
+
+  ; krlError10
+  ; global decl muss decl global heissen
+  decl global int i
+  global decl int i
+ ;\  ERROR  /
+
+
+  ; krlError11
+  ; ein DO wo keines hingehoert (WHILE,FOR,UNTIL)
+  while true 
+  while true do
+  ;          \/
+  endwhile
+  endwhile
+
+  for i = 1 to 5 step 1
+  for i = 1 to 5 step==1 do
+  ;                      \/
+  endfor
+  endfor
+
+  repeat
+  repeat
+  until bla
+  until bla do
+  ;         \/
+
+
+  ; for-loop highight
+  for i = 1 to 5 step 2
+  for i = a to b step c
+  for i from 1 to 5 step 2
+  ;     \ER/
+  for i from a to b step c
+  ;     \ER/
+  for i = 1 to 5 step = 2
+  ;              \ER/
+  for i = a to b step = c
+  ;              \ER/
+  for i = 1 to 5 step == 2
+  ;              \ER/
+  for i = a to b step == c
+  ;              \ER/
+  for i = 1 to 5 step := 2
+  ;              \ER/
+  for i = a to b step := c
+  ;              \ER/
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+  endfor
+
+
+
+  ; KRLERROR0 
+  ; VARS OR FUNCS >24 CHARS ARE NOT POSSIBLE IN KRL. A234567890123456789012345
+  DECL INT A_3456789012345678901234
+  DECL INT A234567890123456789012345
+  ;        \    ERROR              /
+
+  A_3456789012345678901234 = 0
+  A234567890123456789012345 = 0
+ ;\    ERROR              /
+
+  A_3456789012345678901234()
+  A234567890123456789012345()
+ ;\    ERROR              /
+
+
+  ; KRLERROR1
+  ; SHOULD BE INTERRUPT (ON|OFF) \W+
+  INTERRUPT ON 5
+  INTERRUPT 5 ON
+ ;\    ERROR   /
+
+  INTERRUPT OFF 5
+  INTERRUPT 5 OFF
+ ;\    ERROR    /
+
+  INTERRUPT ON N_INT_VAR
+  INTERRUPT N_INT_VAR ON
+ ;\    ERROR           /
+
+  INTERRUPT OFF N_INT_VAR
+  INTERRUPT N_INT_VAR OFF
+ ;\    ERROR            /
+
+
+  ; KRLERROR2
+
+
+  ; KRLERROR3
+  ; FOR BLA==5 TO 7...
+  FOR I = 1 TO 6
+  FOR I == 1 TO 6
+  ;     \/
+  FOR I := 1 TO 6
+  ;     \/
+  ENDFOR
+  ENDFOR
+  ENDFOR
+
+
+  ; KRLERROR4
+  ; WAIT FOR A=B
+  RETURN A==B
+  RETURN A=B
+  ;       \
+  RETURN A:=B
+  ;       \/
+
+  WAIT FOR A AND B==C
+  WAIT FOR A AND B=C
+  ;               \
+  WAIT FOR A AND B:=C
+  ;               \/
+
+  IF A<>5 AND B==TRUE OR (C==D) THEN
+  IF A<>5 AND B==TRUE OR (C=D) THEN
+  ;                        \
+  IF A<>5 AND B==TRUE OR (C:=D) THEN
+  ;                        \/
+  ENDIF
+  ENDIF
+  ENDIF
+
+  WHILE A<>5 AND B==TRUE OR (C==D)
+  WHILE A<>5 AND B==TRUE OR (C=D)
+  ;                           \
+  WHILE A<>5 AND B==TRUE OR (C:=D)
+  ;                           \/
+  ENDWHILE
+  ENDWHILE
+  ENDWHILE
+
+  REPEAT
+  REPEAT
+  REPEAT
+  UNTIL A<>5 AND B==TRUE OR (C==D)
+  UNTIL A<>5 AND B==TRUE OR (C=D)
+  ;                           \
+  UNTIL A<>5 AND B==TRUE OR (C:=D)
+  ;                           \/
+
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS=TRUE DO IR_STOPM ( )
+  ;                                     \
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS:=TRUE DO IR_STOPM ( )
+  ;                                     \/
+
+
+  ; KRLERROR5
+  ; WAIT FOR A><B
+  RETURN A<>B
+  RETURN A><B
+  ;       \/
+
+  WAIT FOR A AND B<>C
+  WAIT FOR A AND B><C
+  ;               \/
+
+  IF A<>5 AND B==TRUE OR (C<>D) THEN
+  IF A<>5 AND B==TRUE OR (C><D) THEN
+  ;                        \/
+  ENDIF
+  ENDIF
+
+  WHILE A<>5 AND B==TRUE OR (C<>D)
+  WHILE A<>5 AND B==TRUE OR (C><D)
+  ;                           \/
+  ENDWHILE
+  ENDWHILE
+
+  REPEAT
+  REPEAT
+  UNTIL A<>5 AND B==TRUE OR (C<>D)
+  UNTIL A<>5 AND B==TRUE OR (C><D)
+  ;                           \/
+
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS<>TRUE DO IR_STOPM ( )
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS><TRUE DO IR_STOPM ( )
+  ;                                     \/
+
+
+  ; KRLERROR6
+  ; IF (A==5) (B==6) ...
+  RETURN (A==5) OR (B==6)
+  RETURN (A==5) (B==6)
+  ;           \E/
+
+  WAIT FOR A AND 
+  WAIT FOR A AND 
+
+  IF A<>5 AND B==TRUE OR (A==5) OR (B==6) THEN
+  IF A<>5 AND B==TRUE OR (A==5) (B==6) THEN
+  ;                           \E/
+  ENDIF
+  ENDIF
+
+  WHILE A<>5 AND B==TRUE OR (A==5) OR (B==6)
+  WHILE A<>5 AND B==TRUE OR (A==5) (B==6)
+  ;                              \E/
+  ENDWHILE
+  ENDWHILE
+
+  REPEAT
+  REPEAT
+  UNTIL A<>5 AND B==TRUE OR (A==5) OR (B==6)
+  UNTIL A<>5 AND B==TRUE OR (A==5)    (B==6)
+  ;                              \ERRO/
+
+
+  ; KRLERROR7
+  ; A == B + 1
+  ; A := B + 1
+  A = B + 5
+  A == B + 5
+  ; \/
+  A := B + 5
+  ; \/
+
+
+  ; KRLERROR8
+  ; THIS ONE IS TRICKY. MAKE SURE THIS DOES NOT MATCH TRIGGER INSTRUCTIONS; OK, NEXT TRY, NOW SEARCH FOR FALSE POSITIVES
+  ; A = B AND C OR (INT1=INT2)
+  ; MAKE SURE THE NEXT LINE IS NOT A FALSE POSITIVE
+  TRIGGER WHEN DISTANCE = 1 DELAY = 0 DO A=5
+  A = B==C
+  A = B=C
+  ;    \
+  A = B=C
+  ;    \
+
+  A = B AND C OR (INT1==INT2)
+  A = B AND C OR (INT1=INT2)
+  ;                   \
+
+
+  ; KRLERROR9
+  ; <(DISTANCE|DELAY|PRIO|MINIMUM|MAXIMUM)> :=
+  ; <(DISTANCE|DELAY|PRIO|MINIMUM|MAXIMUM)> ==
+  TRIGGER WHEN DISTANCE = 1 DELAY = 0 DO BLA() PRIO=-1
+  TRIGGER WHEN DISTANCE := 1 DELAY = 0 DO BLA() PRIO=-1
+  ;                     \/
+  TRIGGER WHEN DISTANCE == 1 DELAY = 0 DO BLA() PRIO=-1
+  ;                     \/
+  TRIGGER WHEN DISTANCE = 1 DELAY := 0 DO BLA() PRIO=-1
+  ;                               \/
+  TRIGGER WHEN DISTANCE = 1 DELAY == 0 DO BLA() PRIO=-1
+  ;                               \/
+  TRIGGER WHEN DISTANCE = 1 DELAY = 0 DO BLA() PRIO:=-1
+  ;                                                \/
+  TRIGGER WHEN DISTANCE = 1 DELAY = 0 DO BLA() PRIO==-1
+  ;                                                \/
+
+  ANOUT ON ANA1=$VEL_ACT*FAC1+OFS1 DELAY= ANA_DELAY1 MINIMUM=-1 MAXIMUM=1
+  ANOUT ON ANA1=$VEL_ACT*FAC1+OFS1 DELAY= ANA_DELAY1 MINIMUM:=-1 MAXIMUM=1
+  ;                                                         \/
+  ANOUT ON ANA1=$VEL_ACT*FAC1+OFS1 DELAY= ANA_DELAY1 MINIMUM==-1 MAXIMUM=1
+  ;                                                         \/
+  ANOUT ON ANA1=$VEL_ACT*FAC1+OFS1 DELAY= ANA_DELAY1 MINIMUM=-1 MAXIMUM:=1
+  ;                                                                    \/
+  ANOUT ON ANA1=$VEL_ACT*FAC1+OFS1 DELAY= ANA_DELAY1 MINIMUM=-1 MAXIMUM==1
+  ;                                                                    \/
+
+
+  ; KRLERROR10
+  ; GLOBAL DECL MUSS DECL GLOBAL HEISSEN
+  DECL GLOBAL INT I
+  GLOBAL DECL INT I
+ ;\  ERROR  /
+
+
+  ; KRLERROR11
+  ; EIN DO WO KEINES HINGEHOERT (WHILE,FOR,UNTIL)
+  WHILE TRUE 
+  WHILE TRUE DO
+  ;          \/
+  ENDWHILE
+  ENDWHILE
+
+  FOR I = 1 TO 5 STEP 1
+  FOR I = 1 TO 5 STEP 1 DO
+  ;                     \/
+  ENDFOR
+  ENDFOR
+
+  REPEAT
+  REPEAT
+  UNTIL BLA
+  UNTIL BLA DO
+  ;         \/
+
+
+  ; FOR-LOOP HIGHIGHT
+  FOR I = 1 TO 5 STEP 2
+  FOR I = A TO B STEP C
+  FOR I FROM 1 TO 5 STEP 2
+  ;     \ER/
+  FOR I FROM A TO B STEP C
+  ;     \ER/
+  FOR I = 1 TO 5 STEP = 2
+  ;              \ER/
+  FOR I = A TO B STEP = C
+  ;              \ER/
+  FOR I = 1 TO 5 STEP == 2
+  ;              \ER/
+  FOR I = A TO B STEP == C
+  ;              \ER/
+  FOR I = 1 TO 5 STEP := 2
+  ;              \ER/
+  FOR I = A TO B STEP := C
+  ;              \ER/
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+  ENDFOR
+
+
+end

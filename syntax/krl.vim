@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.0.0
-" Last Change: 19. Nov 2025
+" Last Change: 12. Jan 2026
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -116,7 +116,9 @@ syn keyword krlType ext extfct extfctp extp
 syn keyword krlType signal channel
 highlight default link krlType Type
 " StorageClass
-syn keyword krlStorageClass decl global const struc enum
+syn keyword krlStorageClass const struc enum
+syn match krlStorageClass /\<decl\>/
+syn match krlStorageClass /\<global\>/
 highlight default link krlStorageClass StorageClass
 " .dat file public
 syn keyword krlDatStorageClass public
@@ -273,9 +275,10 @@ else
   highlight default link krlContinue Statement
 endif
 " interrupt 
-syn match krlStatement /\v\c%(<global>\s+)?<INTERRUPT>%(\s+<decl>)?/ contains=krlStorageClass
+syn match krlStatement /\v\c%(<global>\s+)?<interrupt>%(\s+<decl>)?/ contains=krlStorageClass
 " keywords
-syn keyword krlStatement wait on off enable disable stop trigger with when distance onstart delay do prio import is minimum maximum confirm on_error_proceed
+syn keyword krlStatement wait on off enable disable stop trigger with when distance onstart delay prio import is minimum maximum confirm on_error_proceed
+syn match krlStatement /\<do\>/
 syn match krlStatement /\v\c%(<wait\s+)@7<=<sec>/
 syn match krlStatement /\v\c%(<when\s+)@7<=<path>/
 highlight default link krlStatement Statement
@@ -283,7 +286,10 @@ highlight default link krlStatement Statement
 syn keyword krlConditional if then else endif switch case default endswitch skip endskip
 highlight default link krlConditional Conditional
 " Repeat
-syn keyword krlRepeat for to endfor while endwhile repeat until loop endloop exit
+syn keyword krlRepeat to endfor endwhile repeat loop endloop exit
+syn match krlRepeat /\<for\>/
+syn match krlRepeat /\<while\>/
+syn match krlRepeat /\<until\>/
 " STEP is used as variable in VKRC, this pattern should match STEP -, 5(constant number) or VAR
 syn match krlRepeat /\v\cstep\s+%(-|\w)/me=e-1
 highlight default link krlRepeat Repeat
@@ -423,10 +429,9 @@ if get(g:, 'krlShowError', 1)
   "        ||
   syn match krlError3 /\v%(^\s*for%(\(|\s)+[_$a-zA-Z]+[_$a-zA-Z0-9.\[\]()+\-*/ ]*\s*)@<=[:=]\=/
   "
-  " TODO optimize performance
   " wait for a=b
   "           |
-  syn match krlError4 /\v%(^\s*%(return|wait\s+for|if|while|until|%(global\s+)?interrupt\s+decl)>[^;]+[^;<>=])@<=\=[^=]/
+  syn match krlError4 /\v%(^\s*%(return|wait\s+for|if|while|until|%(global\s+)?interrupt\s+decl)>[^;]+[^;<>=])@<=:?\=[^=]/me=e-1
   "
   " wait for a><b
   "           ||
@@ -436,30 +441,28 @@ if get(g:, 'krlShowError', 1)
   "         |||
   syn match krlError6 /\v%(^\s*%(return|wait\s+for|if|while|until|%(global\s+)?interrupt\s+decl)>[^;]+[^;])@<=\)\s*\(/
   "
-  " TODO optimize performance
   " a == b + 1
   " a := b + 1
   "   ||
   syn match krlError7 /\v%(^\s*%(return|wait\s+for|if|while|until|%(global\s+)?interrupt\s+decl)>[^;]+[^;])@1<!%(^\s*[_$a-zA-Z]+[_$a-zA-Z0-9.\[\],+\-*/]*\s*)@<=[:=]\=/
-  syn match krlError7 /\v\c%(^\s*%(decl\s+)%(global\s+)?%(const\s+)?\w+\s+\w+\s*)@<=[:=]\=/
-  syn match krlError7 /\v\c%(^\s*%(decl\s+)?%(global\s+)?%(const\s+)?%(bool\s+|int\s+|real\s+|char\s+)\w+\s*)@<=[:=]\=/
+  syn match krlError7 /\v%(^\s*%(decl\s+)%(global\s+)?%(const\s+)?\w+\s+\w+\s*)@<=[:=]\=/
+  syn match krlError7 /\v%(^\s*%(decl\s+)?%(global\s+)?%(const\s+)?%(bool\s+|int\s+|real\s+|char\s+)\w+\s*)@<=[:=]\=/
   "
   " this one is tricky. Make sure this does not match trigger instructions; OK, next try, now search for false positives
-  " TODO optimize performance
   " a = b and c or (int1=int2)
   "                     |
-  syn match krlError8 /\v(^\s*[_$a-zA-Z]+[_$a-zA-Z0-9.\[\]()+\-*/]*\s*\=[^;]*[^;<>=])@<=\=\ze[^=]/
+  syn match krlError8 /\v%(^\s*[_$a-zA-Z]+[_$a-zA-Z0-9.\[\]()+\-*/]*\s*\=[^;]*[^;<>=])@<=\=\ze[^=]/
   "
-  " <(distance|delay|prio)> :=
-  " <(distance|delay|prio)> ==
-  "                         ||
-  syn match krlError9 /\v(^[^;]*<(distance|delay|prio|minimum|maximum)\s*)@<=[:=]\=/
+  " <(distance|delay|prio|minimum|maximum)> :=
+  " <(distance|delay|prio|minimum|maximum)> ==
+  "                                         ||
+  syn match krlError9 /\v%(^[^;]*<(distance|delay|prio|minimum|maximum)\s*)@<=[:=]\=/
   "
-  " 'for', 'while' or 'repeat' followed by 'do'
-  syn match krlError10 /\c\v^\s*(until|while|for)>[^;]*<do>/
+  " DO is not used at KRL repeat loops (for, while, until)
+  syn match krlError10 /\v%(^\s*%(for|while|until)[^;]+)@<=<do>/
   "
-  " global decl must be decl global, TODO FIXME
-  syn match krlError11 /\c\v^\s*global\s+decl/
+  " global decl must be decl global
+  syn match krlError11 /\v%(^\s*)@<=global\s+decl>/
   "
   highlight default link krlError0 Error
   highlight default link krlError1 Error
