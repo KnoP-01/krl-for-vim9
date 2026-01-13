@@ -1,7 +1,7 @@
 " Vim autoload file
 " Language: Helper functions used for Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
-" Version: 3.0.0
+" Version: 3.1.0
 " Last Change: 03. Oct 2025
 
 " Init {{{
