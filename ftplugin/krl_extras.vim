@@ -1,8 +1,8 @@
 " Vim file type plugin
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
-" Version: 3.1.0
-" Last Change: 24. Jul 2025
+" Version: 3.1.1
+" Last Change: 15. Jan 2026
 "
 
 " Init {{{
@@ -536,50 +536,62 @@ if !exists("*s:KrlSearchVkrcMarker()")
   endfunction " s:KrlPositionForRead()
 
   function s:KrlReadBody(sBodyFile,sType,sName,sGlobal,sDataType,sReturnVar) abort
-    let l:sBodyFile = glob(fnameescape(g:krlPathToBodyFiles)).a:sBodyFile
-    " if !filereadable(glob(l:sBodyFile))
-    if !filereadable(l:sBodyFile)
-      call knop_extras#VerboseEcho([l:sBodyFile,": Body file not readable."])
-      return
-    endif
-    " read body
-    call s:KrlPositionForRead()
-    execute "silent .-1read ".glob(l:sBodyFile)
-    " set marks
-    let l:start = line('.')
-    let l:end = search('\v\c^\s*end(fct|dat)?>','cnW')
-    " substitute marks in body
-    call knop_extras#SubStartToEnd('<name>',a:sName,l:start,l:end)
-    call knop_extras#SubStartToEnd('<type>',a:sType,l:start,l:end)
-    call knop_extras#SubStartToEnd('<\%(global\|public\)>',a:sGlobal,l:start,l:end)
-    " set another mark after the def(fct|dat)? line is present
-    let l:defstart = search('\v\c^\s*(global\s+)?def(fct|dat)?>','cnW')
-    call knop_extras#SubStartToEnd('<datatype>',a:sDataType,l:start,l:defstart)
-    call knop_extras#SubStartToEnd('<returnvar>',a:sReturnVar,l:start,l:defstart)
-    " correct array
-    let l:sDataType = substitute(a:sDataType,'\[.*','','')
-    let l:sReturnVar = a:sReturnVar . "<>" . a:sDataType
-    let l:sReturnVar = substitute(l:sReturnVar,'<>\w\+\(\[.*\)\?','\1','')
-    call knop_extras#SubStartToEnd('<datatype>',l:sDataType,l:defstart+1,l:end)
-    call knop_extras#SubStartToEnd('<returnvar>',l:sReturnVar,l:defstart+1,l:end)
-    call knop_extras#SubStartToEnd('\v(^\s*return\s+\w+\[)\d+(,)?\d*(,)?\d*(\])','\1\2\3\4',l:defstart+1,l:end)
-    " upper case?
-    if get(g:,'krlAutoFormUpperCase',0)
-      call knop_extras#UpperCase(l:defstart,l:end)
-    endif
-    " indent
-    if exists("b:did_indent")
-      if l:start>0 && l:end>l:start
-        execute l:start.','.l:end."substitute/^/ /"
-        call cursor(l:start,0)
-        execute "silent normal! " . (l:end-l:start+1) . "=="
+    let l:saveClipboard = &clipboard
+    set clipboard=
+    let l:saveRegInfoUnnamed = getreginfo('"')
+    let l:saveRegInfo0       = getreginfo('0')
+    let l:saveRegInfo1       = getreginfo('1')
+    try
+      let l:sBodyFile = glob(fnameescape(g:krlPathToBodyFiles)).a:sBodyFile
+      " if !filereadable(glob(l:sBodyFile))
+      if !filereadable(l:sBodyFile)
+        call knop_extras#VerboseEcho([l:sBodyFile,": Body file not readable."])
+        return
       endif
-    endif
-    " position cursor
-    call cursor(l:start,0)
-    if search('<|>','cW',l:end)
-      call setline('.',substitute(getline('.'),'<|>','','g'))
-    endif
+      " read body
+      call s:KrlPositionForRead()
+      execute "silent .-1read ".glob(l:sBodyFile)
+      " set marks
+      let l:start = line('.')
+      let l:end = search('\v\c^\s*end(fct|dat)?>','cnW')
+      " substitute marks in body
+      call knop_extras#SubStartToEnd('<name>',a:sName,l:start,l:end)
+      call knop_extras#SubStartToEnd('<type>',a:sType,l:start,l:end)
+      call knop_extras#SubStartToEnd('<\%(global\|public\)>',a:sGlobal,l:start,l:end)
+      " set another mark after the def(fct|dat)? line is present
+      let l:defstart = search('\v\c^\s*(global\s+)?def(fct|dat)?>','cnW')
+      call knop_extras#SubStartToEnd('<datatype>',a:sDataType,l:start,l:defstart)
+      call knop_extras#SubStartToEnd('<returnvar>',a:sReturnVar,l:start,l:defstart)
+      " correct array
+      let l:sDataType = substitute(a:sDataType,'\[.*','','')
+      let l:sReturnVar = a:sReturnVar . "<>" . a:sDataType
+      let l:sReturnVar = substitute(l:sReturnVar,'<>\w\+\(\[.*\)\?','\1','')
+      call knop_extras#SubStartToEnd('<datatype>',l:sDataType,l:defstart+1,l:end)
+      call knop_extras#SubStartToEnd('<returnvar>',l:sReturnVar,l:defstart+1,l:end)
+      call knop_extras#SubStartToEnd('\v(^\s*return\s+\w+\[)\d+(,)?\d*(,)?\d*(\])','\1\2\3\4',l:defstart+1,l:end)
+      " upper case?
+      if get(g:,'krlAutoFormUpperCase',0)
+        call knop_extras#UpperCase(l:defstart,l:end)
+      endif
+      " indent
+      if exists("b:did_indent")
+        if l:start>0 && l:end>l:start
+          execute l:start.','.l:end."substitute/^/ /"
+          call cursor(l:start,0)
+          execute "silent normal! " . (l:end-l:start+1) . "=="
+        endif
+      endif
+      " position cursor
+      call cursor(l:start,0)
+      if search('<|>','cW',l:end)
+        call setline('.',substitute(getline('.'),'<|>','','g'))
+      endif
+    finally
+      let &clipboard = l:saveClipboard
+      call setreg('"',l:saveRegInfoUnnamed)
+      call setreg('0',l:saveRegInfo0)
+      call setreg('1',l:saveRegInfo1)
+    endtry
   endfunction " s:KrlReadBody()
 
   function s:KrlDefaultDefdatBody(sName,sGlobal) abort
