@@ -1,3 +1,5 @@
+# krl-for-vim9
+
 ```
                                              _           _______
                                             /.\\        /  ___  \_________  _
@@ -17,11 +19,6 @@
         industrial robot programming                  |           |      |     |
                                                       |___________|      |_____|
 ```
-# krl-for-vim9
-
-**READ [FAQ][2] FIRST** if you want more than just syntax highlight and 
-automatic indenting. It is a quick overview over the most important options 
-and mappings provided by KRL for Vim9. For more details see the [help][3] file.
 
 ## Introduction:
 
@@ -47,12 +44,16 @@ Since version 2.0.0 KRC1 backups are supported too.
 **Note to Linux users:** Keep your files to edit on a FAT file system. 
 Some features need the case insensitive file system to work properly.
 
+**READ [FAQ][2]** if you want more than just syntax highlight and automatic
+indenting. It is a quick overview over the most important options and mappings
+provided by KRL for Vim9. For more details see the [help][3] file.
+
 
 ## Installation:
 
-### Installation with [vim-plug][14]:  ~  
+### Installation with [vim-plug][14]:
 
-Put this in your .vimrc:  >
+Put this in your .vimrc:
 
     call plug#begin('~/.vim/plugged')
       Plug 'KnoP-01/krl-for-vim9'
@@ -62,35 +63,35 @@ Put this in your .vimrc:  >
     syntax on                  " syntax and filetype on in that order
     filetype plugin indent on  " syntax and filetype on in that order
 
-For the first installation run: >
+For the first installation run:
 
     :PlugInstall
 
-Update every once in a while with: >
+Update every once in a while with:
 
     :PlugUpdate
 
-### Manual installation:  ~  
+### Manual installation:
 
 Extract the most recent [release][1] and copy the folders 
 `/doc`, `/ftdetect`, `/ftplugin`, `/indent` and `/syntax` 
 into your `~/.vim/` or `%USERPROFILE%\vimfiles\` directory. 
 Overwrite krl.\* files from older installation.
 
-Put the following in your .vimrc: >
+Put the following in your .vimrc:
 
     syntax on                  " syntax and filetype on in that order
     filetype plugin indent on  " syntax and filetype on in that order
 
-You may have to run >
+You may have to run
 
     :helptags ~/.vim/doc/
 
-or >
+or
 
     :helptags ~/vimfiles/doc/
 
-to use the help within Vim after installation. >
+to use the help within Vim after installation.
 
     :help krl
 
@@ -98,7 +99,7 @@ to use the help within Vim after installation. >
 ## FAQ
 
 Q: How do I disable an annoying feature of krl-for-vim9?  
-A: Disable feature in your `vimrc`, see [krl-options][6] for details: >
+A: Disable feature in your `vimrc`, see [krl-options][6] for details:
 
     let g:krlShortenQFPath    = 0 " don't shorten paths in quickfix
     let g:krlAutoComment      = 0 " don't continue comments with o, O or Enter
@@ -115,7 +116,7 @@ Q: Which keys get mapped to what? Will that override my own mappings?
 A: krl-for-vim9 will not override existing mappings unless the corresponding
    option is explicitly set. To use different key bindings see :help 
    [krl-key-mappings][13] for \<Plug\> mappings.  
-   Otherwise krl-for-vim9 create the following mappings: >
+   Otherwise krl-for-vim9 create the following mappings:
 
     <F2> Open all folds
     <F3> Open none movement folds
@@ -173,20 +174,20 @@ A: krl-for-vim9 will not override existing mappings unless the corresponding
 
 Q: Does krl-for-vim9 provide a mapping for indenting the whole file?  
 A: No, but you may put the following in your .vimrc or
-   `~/.vim/after/ftplugin/krl.vim`: >
+   `~/.vim/after/ftplugin/krl.vim`:
 
     nnoremap ANYKEY gg=G``zz
 
 Q: Does krl-for-vim9 provide a mapping to quickly switch between the
    corresponding dat- and src-file?  
 A: No, but you may put the following in your .vimrc or
-   `~/.vim/after/ftplugin/krl.vim`: >
+   `~/.vim/after/ftplugin/krl.vim`:
 
     nnoremap ANYKEY :if expand('%')=~'\.dat$' <bar> e %:s?\.dat$?.src? <bar> else <bar> e %:s?\.src$?.dat? <bar> endif<CR>
 
 Q: I did set g:krlFoldLevel=1 or 2 but folds are open after loading a .src
    file?!   
-A: Unfortunately the order matters: >
+A: Unfortunately the order matters:
 
     syntax on                   " before filetype plugin on
     filetype plugin indent on   " after syntax on
@@ -194,7 +195,7 @@ A: Unfortunately the order matters: >
 Q: Folds are still open although I have syntax on and filetype on in the right
    order?!  
 A: Some plugin manager mess with those commands, so with vim-plug I had to
-   redo this after plug#end(): >
+   redo this after plug#end():
 
     call plug#end()
     syntax off                  " undo what plug#begin() did to syntax
@@ -203,7 +204,7 @@ A: Some plugin manager mess with those commands, so with vim-plug I had to
     filetype plugin indent on   " after syntax on
 
 Q: Scrolling feels sluggish. What can I do?  
-A: Switch error highlighting off and/or folding to marker: >
+A: Switch error highlighting off and/or folding to marker:
 
     let g:krlFoldMethodSyntax = 0 " better performance, but case sensitive
     let g:krlShowError        = 0 " better performance
