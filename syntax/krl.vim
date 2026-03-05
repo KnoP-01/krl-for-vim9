@@ -2,7 +2,7 @@
 " Language: Kuka Robot Language
 " Maintainer: Patrick Meiser-Knosowski <knosowski@graeffrobotics.de>
 " Version: 3.1.0
-" Last Change: 13. Jan 2026
+" Last Change: 05. Mar 2026
 " Credits: Thanks for contributions to this to Michael Jagusch
 "          Thanks for beta testing to Thomas Baginski
 "
@@ -266,80 +266,6 @@ else
 endif
 " }}} System variable
 
-" Statements, keywords et al {{{
-" continue
-syn keyword krlContinue continue
-if g:krlGroupName
-  highlight default link krlContinue Continue
-else
-  highlight default link krlContinue Statement
-endif
-" interrupt 
-syn match krlStatement /\v\c%(<global>\s+)?<interrupt>%(\s+<decl>)?/ contains=krlStorageClass
-" keywords
-syn keyword krlStatement wait on off enable disable stop trigger with when distance onstart delay prio import is minimum maximum confirm on_error_proceed
-syn match krlStatement /\<do\>/
-syn match krlStatement /\v\c%(<wait\s+)@7<=<sec>/
-syn match krlStatement /\v\c%(<when\s+)@7<=<path>/
-highlight default link krlStatement Statement
-" Conditional
-syn keyword krlConditional if then else endif switch case default endswitch skip endskip
-highlight default link krlConditional Conditional
-" Repeat
-syn keyword krlRepeat to endfor endwhile repeat loop endloop exit
-syn match krlRepeat /\<for\>/
-syn match krlRepeat /\<while\>/
-syn match krlRepeat /\<until\>/
-" STEP is used as variable in VKRC, this pattern should match STEP -, 5(constant number) or VAR
-syn match krlRepeat /\v\cstep\s+%(-|\w)/me=e-1
-highlight default link krlRepeat Repeat
-" Label
-syn keyword krlLabel goto
-syn match krlLabel /^\s*\w\+:\ze\s*\%(;.*\)\?$/
-highlight default link krlLabel Label
-" Keyword
-syn keyword krlKeyword anin anout digin
-highlight default link krlKeyword Keyword
-" Exception
-syn keyword krlException return resume halt
-highlight default link krlException Exception
-" }}} Statements, keywords et al
-
-" special keywords for movement commands {{{
-syn keyword krlMovement PTP PTP_REL LIN LIN_REL CIRC CIRC_REL SPL SPL_REL SPTP SPTP_REL SLIN SLIN_REL SCIRC SCIRC_REL
-" VKRC movement
-syn keyword krlMovement CIR KCIR KLIN
-" Async movement
-syn keyword krlMovement ASYPTP ASYCONT ASYSTOP ASYCANCEL MOVE_EMI
-syn match krlMovement /\v\c^\s*<BRAKE(\s+F)?>/
-if g:krlGroupName
-  highlight default link krlMovement Movement
-else
-  highlight default link krlMovement Special
-endif
-" movement modifiers
-syn match krlMoveBlockInst /\c\v^\s*TIME_BLOCK\s+(START|PART|END)/
-syn match krlMoveBlockInst /\c\v^\s*CONST_VEL\s+(START|END)/
-syn keyword krlMoveBlockInst ptp_spline spline endspline
-highlight default link krlMoveBlockInst Statement
-syn keyword krlMoveMod ca c_ptp c_dis c_vel c_ori c_spl
-if g:krlGroupName
-  highlight default link krlMoveMod Movement
-else
-  highlight default link krlMoveMod Special
-endif
-" }}} special keywords for movement commands
-
-" Structure value {{{
-" avoid coloring structure component names
-syn match krlNames /\.[a-zA-Z_][.a-zA-Z0-9_$]*/
-syn match krlNames contained /[a-zA-Z_][.a-zA-Z0-9_$]*/
-" highlight default link krlNames None
-" Structure value
-syn region krlStructVal start=/{/ end=/}/ oneline containedin=krlStructVal contains=krlNames
-highlight default link krlStructVal Delimiter
-" }}} Structure value
-
 " BuildInFunction {{{
 syn keyword krlBuildInFunction contained Pulse
 syn keyword krlBuildInFunction contained m_comment
@@ -411,9 +337,85 @@ endif
 " }}} BuildInFunction
 
 " Function {{{
+" Moved Functions above Statements to not get false highlight e.g. "while ("
 syn match krlFunction /[$a-zA-Z_]\w* *(/me=e-1 contains=krlBuildInFunction
 highlight default link krlFunction Function
 " }}} Function
+
+" Statements, keywords et al {{{
+" continue
+syn keyword krlContinue continue
+if g:krlGroupName
+  highlight default link krlContinue Continue
+else
+  highlight default link krlContinue Statement
+endif
+" interrupt 
+syn match krlStatement /\v\c%(<global>\s+)?<interrupt>%(\s+<decl>)?/ contains=krlStorageClass
+" keywords
+syn keyword krlStatement wait on off enable disable stop trigger with when distance onstart delay prio import is minimum maximum confirm on_error_proceed
+syn match krlStatement /\<do\>/
+syn match krlStatement /\v\c%(<wait\s+)@7<=<sec>/
+syn match krlStatement /\v\c%(<when\s+)@7<=<path>/
+highlight default link krlStatement Statement
+" Conditional
+syn keyword krlConditional if then else endif switch case default endswitch skip endskip
+highlight default link krlConditional Conditional
+" Repeat
+syn keyword krlRepeat to endfor endwhile repeat loop endloop exit
+" the following are matches to get the error highlight to work. See Error
+syn match krlRepeat /\<for\>/
+syn match krlRepeat /\<while\>/
+syn match krlRepeat /\<until\>/
+" STEP is used as variable in VKRC, this pattern should match STEP -, 5(constant number) or VAR
+syn match krlRepeat /\v\cstep\s+%(-|\w)/me=e-1
+highlight default link krlRepeat Repeat
+" Label
+syn keyword krlLabel goto
+syn match krlLabel /^\s*\w\+:\ze\s*\%(;.*\)\?$/
+highlight default link krlLabel Label
+" Keyword
+syn keyword krlKeyword anin anout digin
+highlight default link krlKeyword Keyword
+" Exception
+syn keyword krlException return resume halt
+highlight default link krlException Exception
+" }}} Statements, keywords et al
+
+" special keywords for movement commands {{{
+syn keyword krlMovement PTP PTP_REL LIN LIN_REL CIRC CIRC_REL SPL SPL_REL SPTP SPTP_REL SLIN SLIN_REL SCIRC SCIRC_REL
+" VKRC movement
+syn keyword krlMovement CIR KCIR KLIN
+" Async movement
+syn keyword krlMovement ASYPTP ASYCONT ASYSTOP ASYCANCEL MOVE_EMI
+syn match krlMovement /\v\c^\s*<BRAKE(\s+F)?>/
+if g:krlGroupName
+  highlight default link krlMovement Movement
+else
+  highlight default link krlMovement Special
+endif
+" movement modifiers
+syn match krlMoveBlockInst /\c\v^\s*TIME_BLOCK\s+(START|PART|END)/
+syn match krlMoveBlockInst /\c\v^\s*CONST_VEL\s+(START|END)/
+syn keyword krlMoveBlockInst ptp_spline spline endspline
+highlight default link krlMoveBlockInst Statement
+syn keyword krlMoveMod ca c_ptp c_dis c_vel c_ori c_spl
+if g:krlGroupName
+  highlight default link krlMoveMod Movement
+else
+  highlight default link krlMoveMod Special
+endif
+" }}} special keywords for movement commands
+
+" Structure value {{{
+" avoid coloring structure component names
+syn match krlNames /\.[a-zA-Z_][.a-zA-Z0-9_$]*/
+syn match krlNames contained /[a-zA-Z_][.a-zA-Z0-9_$]*/
+" highlight default link krlNames None
+" Structure value
+syn region krlStructVal start=/{/ end=/}/ oneline containedin=krlStructVal contains=krlNames
+highlight default link krlStructVal Delimiter
+" }}} Structure value
 
 " Error {{{
 if get(g:, 'krlShowError', 1)
